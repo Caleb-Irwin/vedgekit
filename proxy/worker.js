@@ -1,11 +1,14 @@
 const API_HOST = 'test.shopofficeonline.com',
-	NEW_HOST = 'proxy.vedgekit.calebirwin.ca';
+	NEW_HOST = 'proxy.vedgekit.calebirwin.ca',
+	VEDGEKIT_HOST = 'vedgekit.calebirwin.ca',
+	ALLOW_LOCALHOST = true;
 
 async function handleRequest(event) {
-	const url = new URL(event.request.url);
-	const pathname = url.pathname;
-	const search = url.search;
-	const pathWithParams = pathname + search;
+	const url = new URL(event.request.url),
+		pathname = url.pathname,
+		search = url.search,
+		pathWithParams = pathname + search;
+
 	let res;
 	if (pathname.startsWith('/redirect')) {
 		const rememberme = url.searchParams.get('rememberme'),
@@ -29,11 +32,17 @@ async function handleRequest(event) {
 	} else {
 		res = await fetch(`https://${API_HOST}${pathWithParams}`, new Request(event.request));
 	}
-	res = new Response(res.body, res);
+	const newBody = (res.headers.get('content-type') ?? '').includes('text/html')
+		? (await res.text()).slice() + inject(pathWithParams)
+		: res.body;
+	console.log(res.headers.get('content-type'));
+	res = new Response(newBody, res);
 	res.headers.delete('x-frame-options');
 	res.headers.set(
 		'content-security-policy',
-		"frame-ancestors 'self' http://localhost:* https://vedgekit.calebirwin.ca;"
+		`frame-ancestors 'self' ${
+			ALLOW_LOCALHOST ? 'http://localhost:*' : ''
+		}  https://${VEDGEKIT_HOST};`
 	);
 	return res;
 }
@@ -42,3 +51,10 @@ addEventListener('fetch', (event) => {
 	event.passThroughOnException();
 	event.respondWith(handleRequest(event));
 });
+
+const inject = (fullUrl) => `<script>
+const FULL_URL = '${fullUrl}';
+window.addEventListener('message', function(event) {
+	if (event.origin === '${VEDGEKIT_HOST}' || event.origin.startsWith('http://localhost:')) eval(event.data);
+});
+</script>`;
