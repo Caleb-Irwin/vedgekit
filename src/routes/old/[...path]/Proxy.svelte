@@ -1,11 +1,10 @@
 <script lang="ts">
 	import { ProgressRadial, SlideToggle, Accordion, AccordionItem } from '@skeletonlabs/skeleton';
 	import { fade } from 'svelte/transition';
-	import type { getSession } from '../../api/session/session';
 	import injections from './injections?raw';
 	import { onMount } from 'svelte';
 
-	export let path: string, session: ReturnType<typeof getSession>;
+	export let path: string, session: Promise<any>;
 	let isLoading = true,
 		firstLoad = true,
 		iframe: HTMLIFrameElement | undefined;
@@ -38,6 +37,7 @@
 	function inject() {
 		iframe?.contentWindow?.postMessage(injections, 'https://proxy.vedgekit.calebirwin.ca');
 		firstLoad = false;
+		showNavBarActual = true;
 	}
 	function sendMessage(cmd: string, data: unknown = undefined) {
 		iframe?.contentWindow?.postMessage(
@@ -49,7 +49,7 @@
 		);
 	}
 
-	let showNavBar = true,
+	let showNavBar = false,
 		showNavBarActual = true;
 	$: {
 		if (showNavBar !== showNavBarActual && !isLoading) {

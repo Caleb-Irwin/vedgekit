@@ -1,10 +1,12 @@
 import { redirect } from '@sveltejs/kit';
 import type { RequestHandler } from './$types';
-import { getSession, type Session } from '../../api/session/session';
+import { SessionManager, type Session } from '$lib/server/session';
 
 export const GET: RequestHandler = async ({ url, cookies }) => {
+	const session = new SessionManager(cookies);
+	await session.init();
 	const path = url.searchParams.get('url') ?? '';
-	throw redirect(302, getUrl(path, (await getSession(cookies.get('session'))).contents as Session));
+	throw redirect(302, getUrl(path, session.s));
 };
 
 const getUrl = (path: string, session: Session) =>

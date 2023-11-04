@@ -1,11 +1,11 @@
 import type { LayoutServerLoad } from './$types';
-import { getSession } from './api/session/session';
+import { SessionManager } from '$lib/server/session';
 
 export const load: LayoutServerLoad = async ({ cookies }) => {
-	const session = getSession(cookies.get('session'));
+	const session = new SessionManager(cookies);
 
 	return {
-		streamed: { session },
+		streamed: { session: session.init(undefined, 'default', false) },
 		writeSessionCookie: cookies.get('session') === undefined
 	};
 };
