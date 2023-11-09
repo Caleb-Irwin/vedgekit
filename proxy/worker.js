@@ -21,7 +21,7 @@ async function handleRequest(event) {
 			'set-cookie',
 			`REMEMBERME=${rememberme}; Max-Age=1800; Expires=Mon, 30-Oct-2023 03:23:43 GMT; Path=/`
 		);
-		headers.append('set-cookie', `SESSION=${session}; Path=/; HttpOnly; SameSite=Lax`);
+		headers.append('set-cookie', `SESSION=${session}; HttpOnly; Path=/`);
 
 		res = new Response(null, {
 			status: 302,
@@ -44,6 +44,8 @@ async function handleRequest(event) {
 			ALLOW_LOCALHOST ? 'http://localhost:*' : ''
 		}  https://${VEDGEKIT_HOST};`
 	);
+	if (res.headers.get('location')?.includes(API_HOST))
+		res.headers.set('location', res.headers.get('location').replace(API_HOST, NEW_HOST));
 	return res;
 }
 

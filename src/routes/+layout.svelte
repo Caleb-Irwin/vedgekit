@@ -1,6 +1,6 @@
 <script lang="ts">
 	import '../app.postcss';
-	import { AppShell, AppBar } from '@skeletonlabs/skeleton';
+	import { AppShell, AppBar, LightSwitch } from '@skeletonlabs/skeleton';
 
 	// Floating UI for Popups
 	import { computePosition, autoUpdate, flip, shift, offset, arrow } from '@floating-ui/dom';
@@ -29,8 +29,10 @@
 				<strong class="text-xl uppercase">Vedgekit</strong>
 			</svelte:fragment>
 			<svelte:fragment slot="trail">
+				<LightSwitch />
 				<a class="btn btn-sm variant-ghost-surface" href="/"> Home </a>
 				<a class="btn btn-sm variant-ghost-surface" href="/old"> Old </a>
+				<a class="btn btn-sm variant-ghost-surface" href="/cart"> Cart </a>
 			</svelte:fragment>
 		</AppBar>
 	</svelte:fragment>

@@ -1,6 +1,7 @@
 import type { Cookies } from '@sveltejs/kit';
 import setCookieParser from 'set-cookie-parser';
 import jwt from '@tsndr/cloudflare-worker-jwt';
+import { req, type ReqConf } from './req';
 
 export interface SessionPayload {
 	vSession: string;
@@ -8,6 +9,7 @@ export interface SessionPayload {
 	vAuthorization: string;
 	vUserId: string;
 	vStoreId: string;
+	vCartId: null | string;
 	lang: 'en' | 'fr';
 }
 
@@ -51,11 +53,12 @@ async function getSession(
 	const setCookies = setCookieParser(res.headers.getSetCookie(), {
 			map: true
 		}),
-		rememberme = setCookies.REMEMBERME?.value ?? '',
-		session = setCookies.SESSION?.value ?? '',
+		rememberme = setCookies.REMEMBERME?.value ?? orginalSession?.vRememberme,
+		session = setCookies.SESSION?.value ?? orginalSession?.vSession,
 		authorization = /Bearer .+?(?=')/.exec(text)?.[0] ?? '',
 		userId = /addItemToCart\(.*?,.*?,.*?,\\'(\d+).*?\)/.exec(text)?.[1] ?? '',
-		storeId = /addItemToCart\(\\'(\d+).*?\)/.exec(text)?.[1] ?? '';
+		storeId = /addItemToCart\(\\'(\d+).*?\)/.exec(text)?.[1] ?? '',
+		cartId = orginalSession?.vCartId ?? null;
 
 	if (!(rememberme?.length > 0 && session?.length > 0 && authorization?.length > 0))
 		return { jwt: null };
@@ -66,6 +69,7 @@ async function getSession(
 		vAuthorization: authorization,
 		vUserId: userId,
 		vStoreId: storeId,
+		vCartId: cartId,
 		lang: 'en'
 	};
 	return {
@@ -79,9 +83,11 @@ export class SessionManager {
 	private session: Session | undefined;
 	private jwt: string | undefined;
 	private cookies: Cookies;
+	private storeCookies: boolean;
 
-	constructor(cookies: Cookies) {
+	constructor(cookies: Cookies, storeCookies: boolean = true) {
 		this.cookies = cookies;
+		this.storeCookies = storeCookies;
 	}
 
 	async init(token?: string, mode: 'default' | 'refresh' | 'new' = 'default', store = true) {
@@ -96,12 +102,16 @@ export class SessionManager {
 	}
 
 	private store() {
-		this.cookies.set('session', this.jwt as string, { path: '/' });
+		if (this.storeCookies) this.cookies.set('session', this.jwt as string, { path: '/' });
 	}
 
 	get s() {
 		if (!this.inited) throw new Error('Must init() first!');
 		return this.session as Session;
+	}
+
+	get JWT() {
+		return this.jwt;
 	}
 
 	async updateSession(partialSession: Partial<Session>) {
@@ -124,21 +134,33 @@ export class SessionManager {
 		}
 	}
 
-	async updateFromResponse(res: Response) {
+	private async updateFromResponse(res: Response) {
 		if (!this.inited) throw new Error('Must init() first!');
 		const setCookies = setCookieParser(res.headers.getSetCookie(), {
 			map: true
 		});
 
 		if (setCookies.SESSION?.value) {
-			this.updateSession({
+			await this.updateSession({
 				vSession: setCookies.SESSION?.value,
 				vRememberme: setCookies.REMEMBERME?.value ?? this.s.vRememberme
 			});
 		} else if (setCookies.REMEMBERME?.value) {
-			this.updateSession({
+			await this.updateSession({
 				vRememberme: setCookies.REMEMBERME?.value
 			});
 		}
+	}
+
+	async req(
+		path: string,
+		reqInit?: RequestInit<RequestInitCfProperties>,
+		conf?: ReqConf,
+		customFetch?: typeof fetch
+	) {
+		if (!this.inited) throw new Error('Must init() first!');
+		const res = await req(path, this.session as Session, reqInit, conf, customFetch);
+		await this.updateFromResponse(res);
+		return res;
 	}
 }

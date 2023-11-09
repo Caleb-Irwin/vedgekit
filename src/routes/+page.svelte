@@ -4,7 +4,7 @@
 	<div class="space-y-10 text-center flex flex-col items-center">
 		<section class="img-bg" />
 		<h2 class="h2">Welcome to Vedgekit.</h2>
-		<div class="flex justify-center space-x-2">
+		<div class="flex justify-center">
 			<a class="btn variant-filled" href="/old/"> View Proxied Site </a>
 		</div>
 	</div>

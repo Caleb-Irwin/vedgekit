@@ -1,0 +1,176 @@
+<script lang="ts">
+	import type { Cart, CartItem } from '$lib/cart/getCart';
+	import Fa from 'svelte-fa';
+	import { faTrash, faPen } from '@fortawesome/free-solid-svg-icons';
+	import { debounce } from 'lodash';
+
+	export let item: CartItem,
+		cartPromise: Promise<Cart> | undefined = undefined;
+
+	import { format } from '$lib/formatPrice';
+	import { enhance } from '$app/forms';
+	import { ProgressRadial } from '@skeletonlabs/skeleton';
+	import { slide } from 'svelte/transition';
+
+	let quantity = item.quantity,
+		updatingQuantity = false,
+		formEl: HTMLFormElement,
+		writeNote = !!item.comment,
+		inQuantity = item.quantity;
+
+	$: {
+		if (inQuantity !== item.quantity) {
+			inQuantity = item.quantity;
+			quantity = item.quantity;
+		}
+	}
+
+	const updateQuantity = debounce(() => {
+		if (quantity !== null && quantity >= 1) {
+			formEl.requestSubmit();
+		}
+	}, 1000);
+
+	$: {
+		if (quantity !== item.quantity && !updatingQuantity) {
+			updateQuantity();
+		}
+	}
+</script>
+
+<div class="card p-2 w-full flex flex-col" transition:slide>
+	<div class="w-full flex flex-row space-x-2">
+		<div class="flex-grow flex lg:flex-row flex-col">
+			<div class="flex flex-row space-x-2">
+				<a
+					class="h-20 w-20 aspect-square p-1 card hover:cursor-pointer"
+					href={'/product/' + encodeURIComponent(item.sku)}
+				>
+					<img src={item.image} alt="Image for {item.sku}" />
+				</a>
+				<div class="flex flex-col justify-center">
+					<a href={'/product/' + encodeURIComponent(item.sku)} class="font-semibold hover:underline"
+						>{item.name}</a
+					>
+					<p class="my-1">
+						${item.itemPriceCents / 100}
+						<span class="chip">
+							{item.uom}
+						</span>
+						<span class="chip variant-soft-tertiary">
+							{item.sku}
+						</span>
+						<span
+							class="chip h-6 {item.outOfStock
+								? 'variant-filled-warning'
+								: 'variant-filled-secondary'}"
+						>
+							{item.outOfStock ? 'Backorder' : item.inventory + ' Available'}
+						</span>
+					</p>
+				</div>
+			</div>
+			<div class="flex-grow-0 lg:flex-grow p-1" />
+			<div class="flex flex-row items-center space-x-2 sm:pl-20 lg:pl-0">
+				<button
+					class="btn-icon {writeNote ? 'variant-outline-tertiary' : ''}"
+					disabled={updatingQuantity}
+					on:click={() => (writeNote = !writeNote)}
+				>
+					<Fa icon={faPen} />
+				</button>
+				<form
+					use:enhance={() => {
+						updatingQuantity = true;
+
+						return async ({ update }) => {
+							await update({ reset: false });
+							await cartPromise;
+							updatingQuantity = false;
+						};
+					}}
+					method="post"
+					action="/cart?/add"
+					class="btn-group variant-glass {quantity && quantity >= 1
+						? 'variant-outline-tertiary'
+						: 'variant-outline-error'}"
+					bind:this={formEl}
+				>
+					<input type="hidden" name="sku" value={item.sku} />
+					<input type="hidden" name="quantity" value={quantity - item.quantity} />
+					<button
+						class="w-10 font-semibold"
+						disabled={quantity <= 1 || updatingQuantity}
+						on:click|preventDefault={() => quantity--}>-</button
+					>
+					<input
+						class="quantity-input w-12 p-0 variant-glass border-x-0 border-y-[1px] {quantity &&
+						quantity >= 1
+							? 'border-tertiary-500'
+							: 'border-error-500'}  text-center remove-arrow"
+						type="number"
+						size="4"
+						bind:value={quantity}
+						disabled={updatingQuantity}
+					/>
+					<button
+						class="w-10 font-semibold"
+						on:click|preventDefault={() => quantity++}
+						disabled={updatingQuantity}>+</button
+					>
+				</form>
+				<form
+					action="/cart?/remove"
+					method="post"
+					use:enhance={() => {
+						updatingQuantity = true;
+						return async ({ update }) => {
+							await update({ reset: false });
+							await cartPromise;
+							updatingQuantity = false;
+						};
+					}}
+				>
+					<input type="hidden" name="cartItemId" value={item.cartItemId} />
+					<button class="btn-icon" disabled={updatingQuantity}>
+						<input type="hidden" name="sku" value={item.sku} />
+						<Fa icon={faTrash} />
+					</button>
+				</form>
+			</div>
+		</div>
+		<div class="flex-grow lg:flex-grow-0" />
+
+		<div class="grid place-content-center flex-grow-[10] max-w-[96px]">
+			<p class="text-lg mr-1">
+				{#if item.quantity === quantity && !updatingQuantity}
+					{format(item.totalPriceCents / 100)}
+				{:else}
+					<ProgressRadial width="w-10" value={updatingQuantity ? undefined : 0} stroke={64} />
+				{/if}
+			</p>
+		</div>
+	</div>
+	{#if writeNote}
+		<div>
+			<div class="w-full flex justify-end z-20">
+				<span
+					class="absolute m-1 chip
+				variant-ghost-primary">Saved</span
+				>
+			</div>
+			<textarea class="textarea mb-0 z-10" placeholder="Shopper's Notes" />
+		</div>
+	{/if}
+</div>
+
+<style lang="postcss">
+	.remove-arrow::-webkit-inner-spin-button,
+	.remove-arrow::-webkit-outer-spin-button {
+		-webkit-appearance: none;
+		margin: 0;
+	}
+	.remove-arrow {
+		-moz-appearance: textfield;
+	}
+</style>
