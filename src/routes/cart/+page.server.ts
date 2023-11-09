@@ -1,9 +1,9 @@
 import { getCart } from '$lib/cart/getCart';
 import { SessionManager } from '$lib/server/session';
-import { error } from 'console';
 
 import type { Actions, PageServerLoad } from './$types';
 import { getCartId } from '$lib/cart/getCartId';
+import { error } from '@sveltejs/kit';
 
 export const load: PageServerLoad = async ({ cookies, parent, fetch }) => {
 	const session = new SessionManager(cookies, false);
