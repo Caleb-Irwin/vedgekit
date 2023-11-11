@@ -4,7 +4,9 @@
 	import injections from './injections?raw';
 	import { onMount } from 'svelte';
 
-	export let path: string, session: Promise<any>;
+	export let path: string,
+		session: Promise<any>,
+		hideControls = false;
 	let src = `/old/redirect?url=${encodeURIComponent(path)}`,
 		isLoading = true,
 		firstLoad = true,
@@ -101,24 +103,26 @@
 			on:load={inject}
 			bind:this={iframe}
 		/>
-		<div class="absolute bottom-1 left-2 grid place-content-center p-2 card">
-			<div>
-				<Accordion>
-					<AccordionItem>
-						<svelte:fragment slot="summary">Controls</svelte:fragment>
-						<svelte:fragment slot="content">
-							<SlideToggle name="Show Nav Bar" bind:checked={proxyState.showNavBar}
-								>Navbar</SlideToggle
-							>
-							<br />
-							<SlideToggle name="Show Nav Bar" bind:checked={proxyState.showFooter}
-								>Footer</SlideToggle
-							>
-						</svelte:fragment>
-					</AccordionItem>
-				</Accordion>
+		{#if !hideControls}
+			<div class="absolute bottom-1 left-2 grid place-content-center p-2 card">
+				<div>
+					<Accordion>
+						<AccordionItem>
+							<svelte:fragment slot="summary">Controls</svelte:fragment>
+							<svelte:fragment slot="content">
+								<SlideToggle name="Show Nav Bar" bind:checked={proxyState.showNavBar}
+									>Navbar</SlideToggle
+								>
+								<br />
+								<SlideToggle name="Show Nav Bar" bind:checked={proxyState.showFooter}
+									>Footer</SlideToggle
+								>
+							</svelte:fragment>
+						</AccordionItem>
+					</Accordion>
+				</div>
 			</div>
-		</div>
+		{/if}
 	{/await}
 </div>
 

@@ -1,12 +1,27 @@
-<!-- YOU CAN DELETE EVERYTHING IN THIS PAGE -->
+<script lang="ts">
+	import { faSearch } from '@fortawesome/free-solid-svg-icons/index';
+	import Fa from 'svelte-fa';
+</script>
 
 <div class="container h-full mx-auto flex justify-center items-center">
 	<div class="space-y-10 text-center flex flex-col items-center">
 		<section class="img-bg" />
 		<h2 class="h2">Welcome to Vedgekit.</h2>
-		<div class="flex justify-center">
-			<a class="btn variant-filled" href="/old/"> View Proxied Site </a>
-		</div>
+		<form
+			action="/search"
+			method="get"
+			class="input-group input-group-divider grid-cols-[1fr_auto]"
+		>
+			<input
+				type="text"
+				name="query"
+				id=""
+				placeholder="Search Products"
+				size="40"
+				class="input p-4 text-lg"
+			/>
+			<button class="variant-filled-primary text-lg"><Fa icon={faSearch} /> </button>
+		</form>
 	</div>
 </div>
 
