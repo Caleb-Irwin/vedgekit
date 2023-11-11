@@ -37,6 +37,9 @@ window.addEventListener('message', (event) => {
 		case 'show-footer':
 			showFooter();
 			break;
+		case 'redirect-product-pages':
+			redirectProductPages();
+			break;
 		default:
 			break;
 	}
@@ -60,4 +63,21 @@ function hideFooter() {
 function showFooter() {
 	const h = document.getElementById('wci_footer');
 	if (h) h.style.display = '';
+}
+
+function redirectProductPages() {
+	document.querySelectorAll('a').forEach((item) => {
+		try {
+			const url = new URL(item.href);
+			if (url.pathname === '/productdetails.do') {
+				const sku = url.searchParams.get('sku') ?? '';
+				item.addEventListener('click', (event) => {
+					event.preventDefault();
+					sendMessage('goto', { url: '/product/' + encodeURIComponent(sku) });
+				});
+			}
+		} catch (e) {
+			return;
+		}
+	});
 }

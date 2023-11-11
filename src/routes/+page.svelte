@@ -3,10 +3,10 @@
 	import Fa from 'svelte-fa';
 </script>
 
-<div class="container h-full mx-auto flex justify-center items-center">
-	<div class="space-y-10 text-center flex flex-col items-center">
+<div class="container h-full w-full flex justify-center items-center">
+	<div class="w-full space-y-10 text-center flex flex-col items-center p-2">
 		<section class="img-bg" />
-		<h2 class="h2">Welcome to Vedgekit.</h2>
+		<h2 class="text-4xl">Vedgekit.</h2>
 		<form
 			action="/search"
 			method="get"
@@ -17,7 +17,6 @@
 				name="query"
 				id=""
 				placeholder="Search Products"
-				size="40"
 				class="input p-4 text-lg"
 			/>
 			<button class="variant-filled-primary text-lg"><Fa icon={faSearch} /> </button>

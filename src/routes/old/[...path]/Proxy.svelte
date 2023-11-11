@@ -3,6 +3,7 @@
 	import { fade } from 'svelte/transition';
 	import injections from './injections?raw';
 	import { onMount } from 'svelte';
+	import { goto } from '$app/navigation';
 
 	export let path: string,
 		session: Promise<any>,
@@ -16,7 +17,6 @@
 		window.addEventListener(
 			'message',
 			(event) => {
-				console.log('Event: ', event);
 				const e = JSON.parse(event.data);
 				switch (e?.cmd) {
 					case 'done':
@@ -26,6 +26,12 @@
 						break;
 					case 'navigating':
 						isLoading = true;
+						break;
+					case 'goto':
+						console.log(e.data.url);
+
+						goto(e.data.url);
+						break;
 					default:
 						break;
 				}
@@ -37,10 +43,15 @@
 	interface ProxyState {
 		showNavBar: boolean;
 		showFooter: boolean;
+		redirectProductPages: boolean;
 	}
 
-	let proxyState: ProxyState = { showNavBar: false, showFooter: false },
-		initProxyState: ProxyState = { showNavBar: true, showFooter: true },
+	let proxyState: ProxyState = { showNavBar: false, showFooter: false, redirectProductPages: true },
+		initProxyState: ProxyState = {
+			showNavBar: true,
+			showFooter: true,
+			redirectProductPages: false
+		},
 		proxyStateCurrent = initProxyState;
 
 	function updatePage() {
@@ -51,6 +62,14 @@
 		if (proxyStateCurrent.showFooter !== proxyState.showFooter) {
 			sendMessage(proxyState.showFooter ? 'show-footer' : 'hide-footer');
 			proxyStateCurrent.showFooter = proxyState.showFooter;
+		}
+		if (
+			proxyStateCurrent.redirectProductPages !== proxyState.redirectProductPages &&
+			proxyState.redirectProductPages === true &&
+			!isLoading
+		) {
+			sendMessage('redirect-product-pages');
+			proxyStateCurrent.redirectProductPages = true;
 		}
 	}
 

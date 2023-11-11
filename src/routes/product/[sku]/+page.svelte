@@ -5,4 +5,6 @@
 	export let data: PageData;
 </script>
 
-<Proxy path={data.path} session={data.streamed.session} hideControls />
+{#key data.path}
+	<Proxy path={data.path} session={data.streamed.session} hideControls />
+{/key}
