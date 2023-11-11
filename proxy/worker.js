@@ -1,4 +1,4 @@
-const API_HOST = 'test.shopofficeonline.com',
+const API_HOST = 'shop.beatties.com',
 	NEW_HOST = 'proxy.vedgekit.calebirwin.ca',
 	VEDGEKIT_HOST = 'vedgekit.calebirwin.ca',
 	ALLOW_LOCALHOST = true;

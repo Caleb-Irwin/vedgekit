@@ -1,4 +1,5 @@
 import type { Session } from './';
+import { V_HOST } from '$env/static/private';
 
 export interface ReqConf {
 	authorization?: null | string;
@@ -26,7 +27,7 @@ export async function req(
 	conf: ReqConf = {},
 	customFetch?: typeof fetch
 ) {
-	const url = new URL('https://test.shopofficeonline.com');
+	const url = new URL(V_HOST);
 	url.pathname = path;
 	if (conf.query !== null) {
 		conf.query?.storeId !== null &&

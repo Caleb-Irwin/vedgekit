@@ -13,7 +13,7 @@
 
 	export let data: PageData;
 
-	let sku = '55500-01166',
+	let sku = '19061-00',
 		quantity = 1,
 		cart: Cart | null = null,
 		loadCart: Cart | undefined,

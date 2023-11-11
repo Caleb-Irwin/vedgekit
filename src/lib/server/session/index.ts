@@ -2,6 +2,7 @@ import type { Cookies } from '@sveltejs/kit';
 import setCookieParser from 'set-cookie-parser';
 import jwt from '@tsndr/cloudflare-worker-jwt';
 import { req, type ReqConf } from './req';
+import { V_HOST, JWT_SECRET, REQUIRE_AUTHORIZATION_HEADER } from '$env/static/private';
 
 export interface SessionPayload {
 	vSession: string;
@@ -17,14 +18,16 @@ export interface Session extends SessionPayload {
 	iat: number;
 }
 
-const jwtSecret = 'secret';
-
 async function getSessionFromToken(token: string): Promise<Session | null> {
 	try {
-		const isValid = await jwt.verify(token, jwtSecret);
+		const isValid = await jwt.verify(token, JWT_SECRET);
 		if (!isValid) return null;
 		const { payload } = jwt.decode(token);
-		if (payload.vSession && payload.vRememberme && payload.vAuthorization)
+		if (
+			payload.vSession &&
+			payload.vRememberme &&
+			(!JSON.parse(REQUIRE_AUTHORIZATION_HEADER) || payload.vAuthorization)
+		)
 			return payload as Session;
 		else return null;
 	} catch (e) {
@@ -40,7 +43,7 @@ async function getSession(
 		orginalSession = mode === 'new' ? null : await getSessionFromToken(orginalToken);
 	if (orginalSession && mode !== 'refresh') return { jwt: orginalToken, contents: orginalSession };
 
-	const res = await fetch('https://test.shopofficeonline.com/', {
+	const res = await fetch(V_HOST, {
 			headers: {
 				cookie:
 					orginalSession !== null && mode !== 'new'
@@ -60,7 +63,13 @@ async function getSession(
 		storeId = /addItemToCart\(\\'(\d+).*?\)/.exec(text)?.[1] ?? '',
 		cartId = orginalSession?.vCartId ?? null;
 
-	if (!(rememberme?.length > 0 && session?.length > 0 && authorization?.length > 0))
+	if (
+		!(
+			rememberme?.length > 0 &&
+			session?.length > 0 &&
+			(!JSON.parse(REQUIRE_AUTHORIZATION_HEADER) || authorization?.length > 0)
+		)
+	)
 		return { jwt: null };
 
 	const tokenPayload: SessionPayload = {
@@ -73,7 +82,7 @@ async function getSession(
 		lang: 'en'
 	};
 	return {
-		jwt: await jwt.sign(tokenPayload, jwtSecret),
+		jwt: await jwt.sign(tokenPayload, JWT_SECRET),
 		contents: tokenPayload as Session
 	};
 }
@@ -123,7 +132,7 @@ export class SessionManager {
 				//@ts-expect-error jwt.sign() will add back
 				iat: undefined
 			},
-			newJwt = await jwt.sign(newSession, jwtSecret);
+			newJwt = await jwt.sign(newSession, JWT_SECRET);
 
 		if (originalSession.vSession !== newSession.vSession) {
 			await this.init(newJwt, 'refresh');
