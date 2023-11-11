@@ -56,7 +56,12 @@ addEventListener('fetch', (event) => {
 
 const inject = (fullUrl) => `<script>
 const FULL_URL = '${fullUrl}';
-window.addEventListener('message', function(event) {
-	if (event.origin === '${VEDGEKIT_HOST}' || event.origin.startsWith('http://localhost:')) eval(event.data);
+window.addEventListener('message', function (event) {
+	const { inject } = JSON.parse(event.data);
+	if (
+		(event.origin === 'https://${VEDGEKIT_HOST}' || event.origin.startsWith('http://localhost:')) &&
+		inject
+	)
+		eval(inject);
 });
 </script>`;

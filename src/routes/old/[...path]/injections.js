@@ -31,6 +31,12 @@ window.addEventListener('message', (event) => {
 		case 'show-nav':
 			showNav();
 			break;
+		case 'hide-footer':
+			hideFooter();
+			break;
+		case 'show-footer':
+			showFooter();
+			break;
 		default:
 			break;
 	}
@@ -43,5 +49,15 @@ function hideNav() {
 
 function showNav() {
 	const h = document.getElementById('wcic_beatties_header');
+	if (h) h.style.display = '';
+}
+
+function hideFooter() {
+	const h = document.getElementById('wci_footer');
+	if (h) h.style.display = 'none';
+}
+
+function showFooter() {
+	const h = document.getElementById('wci_footer');
 	if (h) h.style.display = '';
 }

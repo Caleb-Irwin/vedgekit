@@ -5,7 +5,8 @@
 	import { onMount } from 'svelte';
 
 	export let path: string, session: Promise<any>;
-	let isLoading = true,
+	let src = `/old/redirect?url=${encodeURIComponent(path)}`,
+		isLoading = true,
 		firstLoad = true,
 		iframe: HTMLIFrameElement | undefined;
 
@@ -17,12 +18,9 @@
 				const e = JSON.parse(event.data);
 				switch (e?.cmd) {
 					case 'done':
+						updatePage();
 						isLoading = false;
-						history.pushState(null, '', '/old' + e.data.url);
-						setTimeout(() => {
-							// sendMessage('hide-nav');
-						}, 5000);
-						console.log(e.data.url);
+						path = e.data.url;
 						break;
 					case 'navigating':
 						isLoading = true;
@@ -34,11 +32,35 @@
 		);
 	});
 
-	function inject() {
-		iframe?.contentWindow?.postMessage(injections, 'https://proxy.vedgekit.calebirwin.ca');
-		firstLoad = false;
-		showNavBarActual = true;
+	interface ProxyState {
+		showNavBar: boolean;
+		showFooter: boolean;
 	}
+
+	let proxyState: ProxyState = { showNavBar: false, showFooter: false },
+		initProxyState: ProxyState = { showNavBar: true, showFooter: true },
+		proxyStateCurrent = initProxyState;
+
+	function updatePage() {
+		if (proxyStateCurrent.showNavBar !== proxyState.showNavBar) {
+			sendMessage(proxyState.showNavBar ? 'show-nav' : 'hide-nav');
+			proxyStateCurrent.showNavBar = proxyState.showNavBar;
+		}
+		if (proxyStateCurrent.showFooter !== proxyState.showFooter) {
+			sendMessage(proxyState.showFooter ? 'show-footer' : 'hide-footer');
+			proxyStateCurrent.showFooter = proxyState.showFooter;
+		}
+	}
+
+	function inject() {
+		iframe?.contentWindow?.postMessage(
+			JSON.stringify({ inject: injections }),
+			'https://proxy.vedgekit.calebirwin.ca'
+		);
+		firstLoad = false;
+		proxyStateCurrent = initProxyState;
+	}
+
 	function sendMessage(cmd: string, data: unknown = undefined) {
 		iframe?.contentWindow?.postMessage(
 			JSON.stringify({
@@ -49,12 +71,9 @@
 		);
 	}
 
-	let showNavBar = false,
-		showNavBarActual = true;
 	$: {
-		if (showNavBar !== showNavBarActual && !isLoading) {
-			sendMessage(showNavBar ? 'show-nav' : 'hide-nav');
-			showNavBarActual = showNavBar;
+		if (!isLoading && proxyState) {
+			updatePage();
 		}
 	}
 </script>
@@ -76,7 +95,7 @@
 	{#await session then}
 		<iframe
 			title="Old Site"
-			src={`/old/redirect?url=${encodeURIComponent(path)}`}
+			{src}
 			frameborder="0"
 			class="flex-grow bg-white {isLoading ? 'hidden' : ''} "
 			on:load={inject}
@@ -87,10 +106,15 @@
 				<Accordion>
 					<AccordionItem>
 						<svelte:fragment slot="summary">Controls</svelte:fragment>
-						<svelte:fragment slot="content"
-							><SlideToggle name="Show Nav Bar" bind:checked={showNavBar}>Navbar</SlideToggle
-							></svelte:fragment
-						>
+						<svelte:fragment slot="content">
+							<SlideToggle name="Show Nav Bar" bind:checked={proxyState.showNavBar}
+								>Navbar</SlideToggle
+							>
+							<br />
+							<SlideToggle name="Show Nav Bar" bind:checked={proxyState.showFooter}
+								>Footer</SlideToggle
+							>
+						</svelte:fragment>
 					</AccordionItem>
 				</Accordion>
 			</div>
