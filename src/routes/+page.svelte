@@ -3,14 +3,14 @@
 	import Fa from 'svelte-fa';
 </script>
 
-<div class="container h-full w-full flex justify-center items-center">
+<div class="h-full w-full flex justify-center items-center">
 	<div class="w-full space-y-10 text-center flex flex-col items-center p-2">
 		<section class="img-bg" />
 		<h2 class="text-4xl">Vedgekit.</h2>
 		<form
 			action="/search"
 			method="get"
-			class="input-group input-group-divider grid-cols-[1fr_auto]"
+			class="input-group input-group-divider grid-cols-[1fr_auto] max-w-2xl"
 		>
 			<input
 				type="text"

@@ -39,12 +39,15 @@
 </script>
 
 <div class="card p-2 w-full flex flex-row justify-center items-center flex-wrap" transition:slide>
-	<a
-		class="h-20 w-20 aspect-square p-1 card hover:cursor-pointer"
-		href={'/product/' + encodeURIComponent(item.sku)}
-	>
-		<img src={item.image} alt="Image for {item.sku}" />
-	</a>
+	{#if item.image}
+		<a
+			class="h-20 w-20 aspect-square p-1 card hover:cursor-pointer"
+			href={'/product/' + encodeURIComponent(item.sku)}
+		>
+			<img src={item.image} alt="Image for {item.sku}" />
+		</a>
+	{/if}
+
 	<div class="px-2 flex-grow-[10] basis-12">
 		<a href={'/product/' + encodeURIComponent(item.sku)} class=" font-semibold hover:underline"
 			>{item.name}</a
