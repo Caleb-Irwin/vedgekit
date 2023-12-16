@@ -9,7 +9,7 @@ export const GET: RequestHandler = async ({ fetch, params }) => {
 	const jpgBuffer = await sharp(await res.arrayBuffer())
 		.toFormat('jpeg', { quality: 80 })
 		.toBuffer();
-	return new Response(jpgBuffer);
+	return new Response(new Blob([jpgBuffer], { type: 'image/jpeg' }));
 };
 
 export const entries: EntryGenerator = async () => {
