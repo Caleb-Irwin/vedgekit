@@ -2,6 +2,7 @@
 	import { faSearch } from '@fortawesome/free-solid-svg-icons/index';
 	import Fa from 'svelte-fa';
 	import type { PageData } from './$types';
+	import Carousel from '$lib/home/FeaturedCarousel.svelte';
 
 	export let data: PageData;
 </script>
@@ -24,14 +25,10 @@
 			/>
 			<button class="variant-filled-primary text-lg"><Fa icon={faSearch} /> </button>
 		</form>
+		{#if data.bannerImages}
+			<div class="w-full aspect-[1805/351]"><Carousel bannerImages={data.bannerImages} /></div>
+		{/if}
 	</div>
-</div>
-<div>
-	{#each data.bannerImages ?? [] as { imageUrl, searchUrl }}
-		<a href="/old/{searchUrl}">
-			<img class="w-full pb-1" src={imageUrl} alt="" />
-		</a>
-	{/each}
 </div>
 
 <style lang="postcss">
