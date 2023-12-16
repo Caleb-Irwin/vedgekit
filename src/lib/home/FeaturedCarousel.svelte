@@ -39,18 +39,20 @@
 </svelte:head>
 
 <div class="card grid items-center group relative">
-	<div class="absolute h-full w-full flex items-center px-2">
+	<div class="absolute h-full left-0 flex">
 		<button
 			type="button"
-			class="hidden group-hover:flex btn-icon btn-icon-lg variant-glass"
+			class="hidden group-hover:flex btn-icon btn-icon-lg variant-glass rounded-none"
 			on:click={carouselLeft}
 		>
 			<Fa icon={faArrowLeft} />
 		</button>
+	</div>
+	<div class="absolute h-full right-0 flex">
 		<div class="flex-grow" />
 		<button
 			type="button"
-			class="hidden group-hover:flex btn-icon btn-icon-lg variant-glass"
+			class="hidden group-hover:flex btn-icon btn-icon-lg variant-glass rounded-none"
 			on:click={carouselRight}
 		>
 			<Fa icon={faArrowRight} />
@@ -62,7 +64,7 @@
 	>
 		{#each bannerImages ?? [] as { imageUrl, searchUrl }}
 			<a href="/old/{searchUrl}" class="shrink-0 snap-center w-full aspect-[1805/351]">
-				<img class="h-full w-full rounded-container-token" src={imageUrl} alt="" loading="lazy" />
+				<img class="h-full w-full rounded-container-token" src={imageUrl} alt="" />
 			</a>
 		{/each}
 	</div>
