@@ -1,9 +1,12 @@
 <script lang="ts">
 	import { faSearch } from '@fortawesome/free-solid-svg-icons/index';
 	import Fa from 'svelte-fa';
+	import type { PageData } from './$types';
+
+	export let data: PageData;
 </script>
 
-<div class="h-full w-full flex justify-center items-center">
+<div class="h-screen w-full flex justify-center items-center">
 	<div class="w-full space-y-10 text-center flex flex-col items-center p-2">
 		<section class="img-bg" />
 		<h2 class="text-4xl">Vedgekit.</h2>
@@ -22,6 +25,13 @@
 			<button class="variant-filled-primary text-lg"><Fa icon={faSearch} /> </button>
 		</form>
 	</div>
+</div>
+<div>
+	{#each data.bannerImages ?? [] as { imageUrl, searchUrl }}
+		<a href="/old/{searchUrl}">
+			<img class="w-full pb-1" src={imageUrl} alt="" />
+		</a>
+	{/each}
 </div>
 
 <style lang="postcss">

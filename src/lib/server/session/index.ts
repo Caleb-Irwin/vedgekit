@@ -91,16 +91,16 @@ export class SessionManager {
 	private inited: boolean = false;
 	private session: Session | undefined;
 	private jwt: string | undefined;
-	private cookies: Cookies;
+	private cookies: Cookies | undefined;
 	private storeCookies: boolean;
 
-	constructor(cookies: Cookies, storeCookies: boolean = true) {
+	constructor(cookies?: Cookies, storeCookies: boolean = true) {
 		this.cookies = cookies;
 		this.storeCookies = storeCookies;
 	}
 
 	async init(token?: string, mode: 'default' | 'refresh' | 'new' = 'default', store = true) {
-		const sessionFull = await getSession(token ?? this.cookies.get('session'), mode);
+		const sessionFull = await getSession(token ?? this.cookies?.get('session'), mode);
 		if (sessionFull.contents === undefined || sessionFull.jwt === null)
 			throw new Error('Failed to create session');
 		this.session = sessionFull.contents;
@@ -111,7 +111,7 @@ export class SessionManager {
 	}
 
 	private store() {
-		if (this.storeCookies) this.cookies.set('session', this.jwt as string, { path: '/' });
+		if (this.storeCookies) this.cookies?.set('session', this.jwt as string, { path: '/' });
 	}
 
 	get s() {
