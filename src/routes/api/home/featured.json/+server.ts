@@ -4,11 +4,13 @@ import type { RequestHandler } from './$types';
 import { SessionManager } from '$lib/server/session';
 import type { Cookies } from '@sveltejs/kit';
 
-export const GET: RequestHandler = async ({ fetch, cookies }) => {
-	return new Response(JSON.stringify(await _getBannerImages(cookies, fetch), null, 2));
+export const GET: RequestHandler = async () => {
+	return new Response(JSON.stringify(_bannerImages, null, 2));
 };
 
-export async function _getBannerImages(
+export const _bannerImages = await getBannerImages();
+
+async function getBannerImages(
 	cookies?: Cookies,
 	customFetch?: typeof fetch
 ): Promise<BannerImages[]> {
@@ -21,13 +23,13 @@ export async function _getBannerImages(
 		customFetch
 	);
 	const bannerAds: BannerAds = await res.json();
-	const images: BannerImages[] = bannerAds.adContentValueDtos.map(({ image, url }) => {
-		const imgParam = encodeURIComponent(image).replaceAll('.', '%2E');
-		const imageUrl = `/api/home/${imgParam}.jpeg`;
+	const images: BannerImages[] = bannerAds.adContentValueDtos.map(({ image, url }, index) => {
+		const imageUrl = `/api/home/${index}.jpeg`;
 		return {
 			imageUrl,
-			imgParam,
-			searchUrl: url
+			originalUrl: image,
+			searchUrl: url,
+			index
 		};
 	});
 	return images;
@@ -36,7 +38,8 @@ export async function _getBannerImages(
 export interface BannerImages {
 	imageUrl: string;
 	searchUrl: string;
-	imgParam: string;
+	originalUrl: string;
+	index: number;
 }
 
 interface BannerAds {
