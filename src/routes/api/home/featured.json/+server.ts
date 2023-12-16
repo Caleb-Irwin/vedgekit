@@ -22,10 +22,11 @@ export async function _getBannerImages(
 	);
 	const bannerAds: BannerAds = await res.json();
 	const images: BannerImages[] = bannerAds.adContentValueDtos.map(({ image, url }) => {
-		const imageUrl = `/api/home/${encodeURIComponent(image)}.jpg`;
+		const imgParam = encodeURIComponent(image).replaceAll('.', '%2E');
+		const imageUrl = `/api/home/${imgParam}.jpeg`;
 		return {
 			imageUrl,
-			imgParam: encodeURIComponent(image),
+			imgParam,
 			searchUrl: url
 		};
 	});

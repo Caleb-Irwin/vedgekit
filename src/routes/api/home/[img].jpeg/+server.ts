@@ -5,7 +5,7 @@ import sharp from 'sharp';
 export const prerender = true;
 
 export const GET: RequestHandler = async ({ fetch, params }) => {
-	const res = await fetch(decodeURIComponent(params.img));
+	const res = await fetch(decodeURIComponent(params.img).replaceAll('%2E', '.'));
 	const jpgBuffer = await sharp(await res.arrayBuffer())
 		.toFormat('jpeg', { quality: 80 })
 		.toBuffer();
