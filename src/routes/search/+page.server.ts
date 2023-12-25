@@ -9,6 +9,8 @@ export const load: PageServerLoad = async ({ url, fetch, cookies }) => {
 	await session.init();
 	return {
 		path: `/search.do?searchTerm=${url.searchParams.get('query')}&cc={vStoreId}&langId={lang}`,
+		featuredMode: url.searchParams.has('featured'),
+		searchTerm: url.searchParams.get('featured') ?? url.searchParams.get('query'),
 		search: {
 			s: search(
 				url.searchParams.has('featured')

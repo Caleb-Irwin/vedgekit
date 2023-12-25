@@ -14,7 +14,7 @@
 </script>
 
 <div
-	class="card max-w-none w-full p-2 flex justify-center items-center {grid
+	class="card max-w-none w-full h-full p-2 flex justify-center items-center {grid
 		? 'flex-col'
 		: 'flex-row flex-wrap'}"
 >
