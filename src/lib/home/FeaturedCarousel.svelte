@@ -2,7 +2,7 @@
 	import type { BannerImages } from '../../routes/api/home/featured.json/+server';
 	import Fa from 'svelte-fa';
 	import { faArrowLeft, faArrowRight } from '@fortawesome/free-solid-svg-icons';
-	import { onMount } from 'svelte';
+	import { onDestroy, onMount } from 'svelte';
 
 	export let bannerImages: BannerImages[];
 
@@ -25,12 +25,18 @@
 		elemCarousel.scroll(x, 0);
 	}
 
+	let interval: string | number | NodeJS.Timeout | undefined;
 	onMount(() => {
-		setInterval(() => {
+		interval = setInterval(() => {
 			if (lastMovementTime + 4500 < Date.now()) {
 				carouselRight();
 			}
 		}, 5000);
+		interval;
+	});
+
+	onDestroy(() => {
+		clearInterval(interval);
 	});
 </script>
 
@@ -62,8 +68,8 @@
 		bind:this={elemCarousel}
 		class="w-full h-full snap-x snap-mandatory scroll-smooth flex overflow-x-auto"
 	>
-		{#each bannerImages ?? [] as { imageUrl, searchUrl }}
-			<a href="/old/{searchUrl}" class="shrink-0 snap-center w-full aspect-[1805/351]">
+		{#each bannerImages ?? [] as { imageUrl, index }}
+			<a href="/search?featured={index}" class="shrink-0 snap-center w-full aspect-[1805/351]">
 				<img class="h-full w-full rounded-container-token" src={imageUrl} alt="" />
 			</a>
 		{/each}

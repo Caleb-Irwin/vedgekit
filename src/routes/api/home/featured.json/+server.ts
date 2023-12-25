@@ -28,6 +28,7 @@ async function getBannerImages(
 		return {
 			imageUrl,
 			originalUrl: image,
+			originalSearch: Object.fromEntries(new URL('http://localhost/' + url).searchParams.entries()),
 			searchUrl: url,
 			index
 		};
@@ -39,6 +40,7 @@ export interface BannerImages {
 	imageUrl: string;
 	searchUrl: string;
 	originalUrl: string;
+	originalSearch: { [key: string]: string };
 	index: number;
 }
 
