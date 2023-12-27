@@ -1,5 +1,5 @@
 import type { PageServerLoad } from './$types';
-import { simpleSearchPromise } from './SimpleSearch';
+import { simpleSearchPromise } from './SimpleSearch.server';
 
 export const load: PageServerLoad = async ({ url, fetch, locals: { session } }) => {
 	const {
