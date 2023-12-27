@@ -87,11 +87,6 @@ async function getSession(
 	};
 }
 
-interface InitReturn {
-	s: Session;
-	jwt: string;
-}
-
 export class SessionManager {
 	private initing: boolean = false;
 	private inited: boolean = false;
@@ -99,13 +94,13 @@ export class SessionManager {
 	private jwt: string | undefined;
 	private cookies: Cookies | undefined;
 	private storeCookies: boolean;
-	ready: Promise<InitReturn>;
-	private resolveReady: undefined | ((s: InitReturn) => void);
+	ready: Promise<void>;
+	private resolveReady: undefined | (() => void);
 
 	constructor(cookies?: Cookies, storeCookies: boolean = true) {
 		this.cookies = cookies;
 		this.storeCookies = storeCookies;
-		this.ready = new Promise<InitReturn>((res) => {
+		this.ready = new Promise<void>((res) => {
 			this.resolveReady = res;
 		});
 	}
@@ -120,9 +115,7 @@ export class SessionManager {
 		this.inited = true;
 		this.initing = false;
 		store && this.store();
-		const r: InitReturn = { s: this.session, jwt: this.jwt };
-		if (this.resolveReady) this.resolveReady(r);
-		return r;
+		if (this.resolveReady) this.resolveReady();
 	}
 
 	private async readyGuard() {
@@ -148,7 +141,19 @@ export class SessionManager {
 		return this.jwt;
 	}
 
-	async updateSession(partialSession: Partial<Session>) {
+	stream(proms: Promise<unknown>[] = []) {
+		this.storeCookies = false;
+		const originalJwt = this.jwt;
+		return {
+			sessionJwt: (async () => {
+				await this.ready;
+				await Promise.allSettled(proms);
+				return originalJwt !== this.jwt ? this.jwt : undefined;
+			})()
+		};
+	}
+
+	async update(partialSession: Partial<Session>) {
 		await this.readyGuard();
 		const originalSession = { ...this.session } as Session,
 			newSession: SessionPayload = {
@@ -175,12 +180,12 @@ export class SessionManager {
 		});
 
 		if (setCookies.SESSION?.value) {
-			await this.updateSession({
+			await this.update({
 				vSession: setCookies.SESSION?.value,
 				vRememberme: setCookies.REMEMBERME?.value ?? this.session?.vRememberme
 			});
 		} else if (setCookies.REMEMBERME?.value) {
-			await this.updateSession({
+			await this.update({
 				vRememberme: setCookies.REMEMBERME?.value
 			});
 		}

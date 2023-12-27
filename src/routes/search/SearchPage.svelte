@@ -4,7 +4,7 @@
 	import { onMount } from 'svelte';
 	import IntersectionObserver from 'svelte-intersection-observer';
 	import type { SearchRes } from './SearchRes.server';
-	import type { simpleSearch } from './SimpleSearch';
+	import type { simpleSearch } from './SimpleSearch.server';
 
 	export let grid = true,
 		totalItemsLeft: null | number = null,

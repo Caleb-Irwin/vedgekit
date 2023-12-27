@@ -6,5 +6,5 @@
 </script>
 
 {#key data.path}
-	<Proxy path={data.path} session={data.streamed.session} hideControls />
+	<Proxy path={data.path} session={data.sessionJwt} hideControls />
 {/key}

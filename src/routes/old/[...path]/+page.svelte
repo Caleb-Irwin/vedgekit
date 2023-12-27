@@ -5,4 +5,4 @@
 	export let data: PageData;
 </script>
 
-<Proxy path={data.path} session={data.streamed.session} />
+<Proxy path={data.path} session={data.sessionJwt} />

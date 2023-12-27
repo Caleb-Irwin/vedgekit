@@ -4,14 +4,9 @@ import { getCartId } from '$lib/cart/getCartId';
 import { error } from '@sveltejs/kit';
 
 export const load: PageServerLoad = async ({ locals: { session }, fetch }) => {
-	const cart = (async () => getCart(session, fetch))(),
-		jwt = (async () => {
-			const initialSession = session.JWT;
-			await cart;
-			return initialSession !== session.JWT ? session.JWT : undefined;
-		})();
+	const cart = getCart(session, fetch);
 
-	return { c: { cart }, s: { jwt } };
+	return { cart, ...session.stream([cart]) };
 };
 
 export const actions = {
@@ -38,7 +33,7 @@ export const actions = {
 		);
 		if (res.status !== 200) error(500, `Failed to get cart id (status = ${res.status})`);
 		const resObj = (await res.json()) as { cartId: number };
-		if (resObj.cartId) await session.updateSession({ vCartId: resObj.cartId.toString() });
+		if (resObj.cartId) await session.update({ vCartId: resObj.cartId.toString() });
 		return {
 			raw: resObj
 		};

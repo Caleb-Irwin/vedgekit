@@ -4,13 +4,16 @@
 	import { faBars, faGrip } from '@fortawesome/free-solid-svg-icons/index';
 	import { onMount } from 'svelte';
 	import SearchPage from './SearchPage.svelte';
+	import { saveSession } from '$lib/session/saveSession';
 
 	export let data: PageData;
+	saveSession(data);
+
 	let grid = true,
 		totalItems: null | number = null;
 
 	onMount(async () => {
-		const res = await data.search.s;
+		const res = await data.search;
 		totalItems = res.searchResults.productCount;
 	});
 </script>
@@ -38,5 +41,5 @@
 		? 'grid-cols-2 sm:grid-cols-3 md:grid-cols-4 xl:grid-cols-6 '
 		: 'grid-cols-1'}"
 >
-	<SearchPage {grid} page={data.page} params={data.params} serverItems={data.search.s} />
+	<SearchPage {grid} page={data.page} params={data.params} serverItems={data.search} />
 </div>

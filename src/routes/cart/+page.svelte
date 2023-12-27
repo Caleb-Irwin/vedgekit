@@ -9,9 +9,10 @@
 	import { faArrowRight, faTag } from '@fortawesome/free-solid-svg-icons/index';
 	import Fa from 'svelte-fa';
 	import { goto } from '$app/navigation';
-	import { browser } from '$app/environment';
+	import { saveSession } from '$lib/session/saveSession';
 
 	export let data: PageData;
+	saveSession(data);
 
 	let sku = '51-0812',
 		quantity = 1,
@@ -23,27 +24,12 @@
 	$: cart = loadCart ?? lastLoadCart ?? null;
 
 	const updateCart = async () => {
-		loadCart = (await data.c.cart) ?? loadCart;
+		loadCart = (await data.cart) ?? loadCart;
 	};
 
 	$: {
-		data.c;
+		data.cart;
 		updateCart();
-	}
-	$: {
-		if (browser) {
-			data?.s?.jwt;
-			updateSession(data?.s?.jwt);
-		}
-	}
-
-	async function updateSession(jwtPromise: Promise<string | undefined>) {
-		const jwt = await jwtPromise;
-		if (jwt)
-			fetch('/api/session', {
-				method: 'POST',
-				headers: { session: jwt }
-			});
 	}
 </script>
 
@@ -53,7 +39,7 @@
 	<div class="flex-grow w-full space-y-2">
 		{#if cart}
 			{#each cart.items as item (item.sku)}
-				<CartItem {item} cartPromise={data.c.cart} />
+				<CartItem {item} cartPromise={data.cart} />
 			{:else}
 				<div class="card p-10 w-full grid place-content-center text-center" transition:slide>
 					<h2 class="text-2xl pb-2">Your cart is empty</h2>

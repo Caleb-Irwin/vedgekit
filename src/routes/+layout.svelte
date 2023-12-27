@@ -8,16 +8,10 @@
 	storePopup.set({ computePosition, autoUpdate, flip, shift, offset, arrow });
 
 	import type { LayoutData } from './$types';
-	import { onMount } from 'svelte';
+	import { saveSession } from '$lib/session/saveSession';
 
 	export let data: LayoutData;
-	onMount(async () => {
-		if (data.writeSessionCookie)
-			fetch('/api/session', {
-				method: 'POST',
-				headers: { session: (await data.streamed.session).jwt ?? '' }
-			});
-	});
+	saveSession(data);
 </script>
 
 <!-- App Shell -->

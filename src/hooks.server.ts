@@ -3,7 +3,7 @@ import type { Handle } from '@sveltejs/kit';
 
 export const handle: Handle = async ({ event, resolve }) => {
 	event.locals.session = new SessionManager(event.cookies);
-	event.locals.session.init(undefined, 'default', false);
+	if (event.route.id !== '/api/session') event.locals.session.init(undefined, 'default', false);
 
 	const response = await resolve(event);
 	return response;
