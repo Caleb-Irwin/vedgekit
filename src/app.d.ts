@@ -1,13 +1,20 @@
 // See https://kit.svelte.dev/docs/types#app
 // for information about these interfaces
-// and what to do when importing types
-declare namespace App {
-	// interface Locals {}
-	// interface PageData {}
-	// interface Error {}
-	// interface Platform {}
-}
 
-declare module '@fortawesome/free-solid-svg-icons/index' {
-	export * from '@fortawesome/free-solid-svg-icons';
+import type { SessionManager } from '$lib/server/session';
+
+// and what to do when importing types
+declare global {
+	declare namespace App {
+		interface Locals {
+			session: SessionManager;
+		}
+		// interface PageData {}
+		// interface Error {}
+		// interface Platform {}
+	}
+
+	declare module '@fortawesome/free-solid-svg-icons/index' {
+		export * from '@fortawesome/free-solid-svg-icons';
+	}
 }

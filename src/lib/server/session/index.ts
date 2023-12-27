@@ -87,31 +87,56 @@ async function getSession(
 	};
 }
 
+interface InitReturn {
+	s: Session;
+	jwt: string;
+}
+
 export class SessionManager {
+	private initing: boolean = false;
 	private inited: boolean = false;
 	private session: Session | undefined;
 	private jwt: string | undefined;
 	private cookies: Cookies | undefined;
 	private storeCookies: boolean;
+	ready: Promise<InitReturn>;
+	private resolveReady: undefined | ((s: InitReturn) => void);
 
 	constructor(cookies?: Cookies, storeCookies: boolean = true) {
 		this.cookies = cookies;
 		this.storeCookies = storeCookies;
+		this.ready = new Promise<InitReturn>((res) => {
+			this.resolveReady = res;
+		});
 	}
 
 	async init(token?: string, mode: 'default' | 'refresh' | 'new' = 'default', store = true) {
+		this.initing = true;
 		const sessionFull = await getSession(token ?? this.cookies?.get('session'), mode);
 		if (sessionFull.contents === undefined || sessionFull.jwt === null)
 			throw new Error('Failed to create session');
 		this.session = sessionFull.contents;
 		this.jwt = sessionFull.jwt;
 		this.inited = true;
+		this.initing = false;
 		store && this.store();
-		return { s: this.session, jwt: this.jwt };
+		const r: InitReturn = { s: this.session, jwt: this.jwt };
+		if (this.resolveReady) this.resolveReady(r);
+		return r;
 	}
 
-	private store() {
-		if (this.storeCookies) this.cookies?.set('session', this.jwt as string, { path: '/' });
+	private async readyGuard() {
+		if (this.inited) return;
+		else if (this.initing) {
+			await this.ready;
+			return;
+		} else {
+			throw new Error('Must init() first!');
+		}
+	}
+
+	store(force: boolean = false) {
+		if (this.storeCookies || force) this.cookies?.set('session', this.jwt as string, { path: '/' });
 	}
 
 	get s() {
@@ -124,7 +149,7 @@ export class SessionManager {
 	}
 
 	async updateSession(partialSession: Partial<Session>) {
-		if (!this.inited) throw new Error('Must init() first!');
+		await this.readyGuard();
 		const originalSession = { ...this.session } as Session,
 			newSession: SessionPayload = {
 				...originalSession,
@@ -144,7 +169,7 @@ export class SessionManager {
 	}
 
 	private async updateFromResponse(res: Response) {
-		if (!this.inited) throw new Error('Must init() first!');
+		await this.readyGuard();
 		const setCookies = setCookieParser(res.headers.getSetCookie(), {
 			map: true
 		});
@@ -152,7 +177,7 @@ export class SessionManager {
 		if (setCookies.SESSION?.value) {
 			await this.updateSession({
 				vSession: setCookies.SESSION?.value,
-				vRememberme: setCookies.REMEMBERME?.value ?? this.s.vRememberme
+				vRememberme: setCookies.REMEMBERME?.value ?? this.session?.vRememberme
 			});
 		} else if (setCookies.REMEMBERME?.value) {
 			await this.updateSession({
@@ -167,7 +192,7 @@ export class SessionManager {
 		conf?: ReqConf,
 		customFetch?: typeof fetch
 	) {
-		if (!this.inited) throw new Error('Must init() first!');
+		await this.readyGuard();
 		const res = await req(path, this.session as Session, reqInit, conf, customFetch);
 		await this.updateFromResponse(res);
 		return res;

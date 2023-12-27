@@ -1,10 +1,9 @@
 import { redirect } from '@sveltejs/kit';
 import type { RequestHandler } from './$types';
-import { SessionManager, type Session } from '$lib/server/session';
+import type { Session } from '$lib/server/session';
 
-export const GET: RequestHandler = async ({ url, cookies }) => {
-	const session = new SessionManager(cookies);
-	await session.init();
+export const GET: RequestHandler = async ({ url, locals: { session } }) => {
+	await session.ready;
 	const urlParam = decodeURIComponent(url.searchParams.get('url') ?? '/');
 	const path = new URL(urlParam[0] === '/' ? urlParam : '/' + urlParam, 'http://localhost');
 	path.searchParams.forEach((val, key) => {

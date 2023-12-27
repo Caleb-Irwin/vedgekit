@@ -1,19 +1,12 @@
 import { getCart } from '$lib/cart/getCart';
-import { SessionManager } from '$lib/server/session';
-
 import type { Actions, PageServerLoad } from './$types';
 import { getCartId } from '$lib/cart/getCartId';
 import { error } from '@sveltejs/kit';
 
-export const load: PageServerLoad = async ({ cookies, parent, fetch }) => {
-	const session = new SessionManager(cookies, false);
-
-	const cart = (async () => {
-			await session.init((await (await parent()).streamed.session).jwt);
-			return getCart(session, fetch);
-		})(),
+export const load: PageServerLoad = async ({ locals: { session }, fetch }) => {
+	const cart = (async () => getCart(session, fetch))(),
 		jwt = (async () => {
-			const initialSession = cookies.get('session');
+			const initialSession = session.JWT;
 			await cart;
 			return initialSession !== session.JWT ? session.JWT : undefined;
 		})();
@@ -22,9 +15,8 @@ export const load: PageServerLoad = async ({ cookies, parent, fetch }) => {
 };
 
 export const actions = {
-	add: async ({ cookies, request, fetch }) => {
-		const session = new SessionManager(cookies);
-		await session.init();
+	add: async ({ locals: { session }, request, fetch }) => {
+		await session.ready;
 		if (session.s.vCartId === null) {
 			await getCartId(session, fetch);
 		}
@@ -47,14 +39,12 @@ export const actions = {
 		if (res.status !== 200) throw error(500, `Failed to get cart id (status = ${res.status})`);
 		const resObj = (await res.json()) as { cartId: number };
 		if (resObj.cartId) await session.updateSession({ vCartId: resObj.cartId.toString() });
-
 		return {
 			raw: resObj
 		};
 	},
-	remove: async ({ cookies, request, fetch }) => {
-		const session = new SessionManager(cookies);
-		await session.init();
+	remove: async ({ locals: { session }, request, fetch }) => {
+		await session.ready;
 		if (session.s.vCartId === null) {
 			await getCartId(session, fetch);
 		}

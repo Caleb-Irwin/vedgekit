@@ -40,6 +40,7 @@ export async function getCart(
 	session: InstanceType<typeof SessionManager>,
 	internalFetch: typeof fetch
 ): Promise<Cart> {
+	await session.ready;
 	if (session.s.vCartId === null)
 		try {
 			await getCartId(session, internalFetch);

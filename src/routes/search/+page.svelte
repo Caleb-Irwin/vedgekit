@@ -1,17 +1,27 @@
 <script lang="ts">
-	import ListItem from '$lib/itemList/ListItem.svelte';
 	import Fa from 'svelte-fa';
 	import type { PageData } from './$types';
 	import { faBars, faGrip } from '@fortawesome/free-solid-svg-icons/index';
+	import { onMount } from 'svelte';
+	import SearchPage from './SearchPage.svelte';
 
 	export let data: PageData;
-	let grid = true;
+	let grid = true,
+		totalItems: null | number = null;
+
+	onMount(async () => {
+		const res = await data.search.s;
+		totalItems = res.searchResults.productCount;
+	});
 </script>
 
 <h1 class="p-4 pb-2 text-3xl flex">
-	{data.featuredMode
-		? `Featured Product Collection ${parseInt(data.searchTerm ?? '0') + 1}`
-		: `Search results for "${data.searchTerm}"`}
+	<span>
+		{data.featuredMode ? `Featured Product Collection` : `Search results for "${data.searchTerm}"`}
+		{#if totalItems}
+			<span class="text-tertiary-500">{totalItems} {data.featuredMode ? 'Items' : 'Results'}</span>
+		{/if}
+	</span>
 	<span class="flex-grow" />
 	<button
 		class="btn btn-icon {grid ? 'variant-filled-tertiary' : ''}"
@@ -28,33 +38,5 @@
 		? 'grid-cols-2 sm:grid-cols-3 md:grid-cols-4 xl:grid-cols-6 '
 		: 'grid-cols-1'}"
 >
-	{#await data.search.s}
-		{#each new Array(12) as _}
-			<div class="p-0.5">
-				<div
-					class="card w-full h-full {grid
-						? 'min-h-[390px]'
-						: 'min-h-[157px] sm:min-h-[90px]'} animate-pulse"
-				/>
-			</div>
-		{/each}
-	{:then res}
-		{#each res.searchResults.solrProducts as item}
-			<div class="p-0.5">
-				<ListItem
-					item={{
-						productUrl: `/product/${encodeURIComponent(item.partnumber)}`,
-						imageUrl: item.basicsItems[0].listViewImgURL,
-						productNumber: item.partnumber,
-						name: item.name,
-						price: item.basicsItems[0].price,
-						uom: item.basicsItems[0].selling_UOM,
-						inStock: !item.basicsItems[0].outOfStock,
-						raw: item
-					}}
-					{grid}
-				/>
-			</div>
-		{/each}
-	{/await}
+	<SearchPage {grid} page={data.page} params={data.params} serverItems={data.search.s} />
 </div>

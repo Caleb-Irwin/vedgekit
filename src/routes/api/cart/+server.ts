@@ -1,12 +1,8 @@
 import type { RequestHandler } from './$types';
-import { SessionManager } from '$lib/server/session';
 import { error, json } from '@sveltejs/kit';
 import { getCart } from '$lib/cart/getCart';
 
-export const GET: RequestHandler = async ({ cookies, fetch }) => {
-	const session = new SessionManager(cookies);
-	await session.init();
-
+export const GET: RequestHandler = async ({ locals: { session }, fetch }) => {
 	try {
 		return json(await getCart(session, fetch));
 	} catch (e) {

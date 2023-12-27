@@ -2,7 +2,6 @@ export const prerender = true;
 
 import type { RequestHandler } from './$types';
 import { SessionManager } from '$lib/server/session';
-import type { Cookies } from '@sveltejs/kit';
 
 export const GET: RequestHandler = async () => {
 	return new Response(JSON.stringify(_bannerImages, null, 2));
@@ -10,18 +9,10 @@ export const GET: RequestHandler = async () => {
 
 export const _bannerImages = await getBannerImages();
 
-async function getBannerImages(
-	cookies?: Cookies,
-	customFetch?: typeof fetch
-): Promise<BannerImages[]> {
-	const session = new SessionManager(cookies, cookies !== undefined);
+async function getBannerImages(): Promise<BannerImages[]> {
+	const session = new SessionManager(undefined, false);
 	await session.init();
-	const res = await session.req(
-		'/espots?espotName=Home_Dealer_Banner_Image&location=index.jsp',
-		{},
-		{},
-		customFetch
-	);
+	const res = await session.req('/espots?espotName=Home_Dealer_Banner_Image&location=index.jsp');
 	const bannerAds: BannerAds = await res.json();
 	const images: BannerImages[] = bannerAds.adContentValueDtos.map(({ image, url }, index) => {
 		const imageUrl = `/api/home/${index}.jpeg`;

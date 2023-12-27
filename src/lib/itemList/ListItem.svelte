@@ -9,7 +9,6 @@
 		grid = true;
 	let qty = 1,
 		updatingQuantity = false,
-		formEl: HTMLFormElement,
 		success = false;
 </script>
 
@@ -23,7 +22,12 @@
 			class="{grid ? 'w-full' : 'h-20 w-20'} aspect-square p-1 card hover:cursor-pointer"
 			href={item.productUrl}
 		>
-			<img src={item.imageUrl} alt="Image for {item.productNumber}" class="w-full" />
+			<img
+				src={item.imageUrl}
+				alt="Image for {item.productNumber}"
+				class="w-full rounded-sm"
+				loading="lazy"
+			/>
 		</a>
 	{/if}
 
@@ -62,7 +66,6 @@
 		}}
 		method="post"
 		action="/cart?/add"
-		bind:this={formEl}
 		class="{grid ? 'mt-1' : ''} flex flex-row justify-center flex-wrap space-y-1"
 	>
 		<div
@@ -103,7 +106,10 @@
 				disabled={updatingQuantity}>+</button
 			>
 		</div>
-		<button class="btn btn-icon {success ? 'variant-filled-primary' : 'variant-filled-secondary'}">
+		<button
+			class="btn btn-icon {success ? 'variant-filled-primary' : 'variant-filled-secondary'}"
+			disabled={updatingQuantity}
+		>
 			{#if success}
 				<Fa icon={faCheck} />
 			{:else}
