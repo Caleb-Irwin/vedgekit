@@ -28,8 +28,6 @@
 						isLoading = true;
 						break;
 					case 'goto':
-						console.log(e.data.url);
-
 						goto(e.data.url);
 						break;
 					default:

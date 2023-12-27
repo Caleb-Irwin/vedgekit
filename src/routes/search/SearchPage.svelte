@@ -21,9 +21,7 @@
 	}
 	$: {
 		if (!nextPage && totalItemsLeft && totalItemsLeft > 12 && (page === 0 || onScreen)) {
-			console.log(page, totalItemsLeft);
 			nextPage = true;
-			console.log('NEXT PAGE');
 		}
 	}
 	onMount(async () => {
