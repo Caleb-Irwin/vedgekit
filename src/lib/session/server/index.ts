@@ -96,10 +96,12 @@ export class SessionManager {
 	private storeCookies: boolean;
 	ready: Promise<void>;
 	private resolveReady: undefined | (() => void);
+	private lastStored: typeof this.jwt;
 
 	constructor(cookies?: Cookies, storeCookies: boolean = true) {
 		this.cookies = cookies;
 		this.storeCookies = storeCookies;
+		if (this.cookies) this.lastStored = cookies?.get('session');
 		this.ready = new Promise<void>((res) => {
 			this.resolveReady = res;
 		});
@@ -129,7 +131,10 @@ export class SessionManager {
 	}
 
 	store(force: boolean = false) {
-		if (this.storeCookies || force) this.cookies?.set('session', this.jwt as string, { path: '/' });
+		if (this.storeCookies || force) {
+			this.cookies?.set('session', this.jwt as string, { path: '/' });
+			this.lastStored = this.jwt;
+		}
 	}
 
 	get s() {
@@ -143,12 +148,13 @@ export class SessionManager {
 
 	stream(proms: Promise<unknown>[] = []) {
 		this.storeCookies = false;
-		const originalJwt = this.jwt;
 		return {
 			sessionJwt: (async () => {
 				await this.ready;
 				await Promise.allSettled(proms);
-				return originalJwt !== this.jwt ? this.jwt : undefined;
+				const res = this.lastStored !== this.jwt ? this.jwt : undefined;
+				this.lastStored = this.jwt;
+				return res;
 			})()
 		};
 	}
