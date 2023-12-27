@@ -7,6 +7,7 @@ export const GET: RequestHandler = async ({ locals: { session }, fetch }) => {
 		return json(await getCart(session, fetch));
 	} catch (e) {
 		console.log(e);
-		throw error(500, 'Failed to get cart');
+		error(500, 'Failed to get cart');
+		return new Response();
 	}
 };

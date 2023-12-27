@@ -36,7 +36,7 @@ export const actions = {
 			},
 			fetch
 		);
-		if (res.status !== 200) throw error(500, `Failed to get cart id (status = ${res.status})`);
+		if (res.status !== 200) error(500, `Failed to get cart id (status = ${res.status})`);
 		const resObj = (await res.json()) as { cartId: number };
 		if (resObj.cartId) await session.updateSession({ vCartId: resObj.cartId.toString() });
 		return {

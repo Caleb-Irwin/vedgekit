@@ -22,7 +22,8 @@ export const GET: RequestHandler = async ({ url, locals: { session } }) => {
 				break;
 		}
 	});
-	throw redirect(302, getUrl(path, session.s));
+	redirect(302, getUrl(path, session.s));
+	return new Response();
 };
 
 const getUrl = (url: URL, session: Session) =>
