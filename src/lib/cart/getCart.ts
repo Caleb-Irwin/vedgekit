@@ -1,4 +1,4 @@
-import type { SessionManager } from '$lib/server/session';
+import type { SessionManager } from '$lib/session/server';
 import { getCartId } from './getCartId';
 
 export interface Cart {

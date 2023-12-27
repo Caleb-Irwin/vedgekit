@@ -1,4 +1,4 @@
-import type { SessionManager } from '$lib/server/session';
+import type { SessionManager } from '$lib/session/server';
 import { getFeatured } from '../api/home/featured.json/getFeatured';
 import { search } from './Search.server';
 

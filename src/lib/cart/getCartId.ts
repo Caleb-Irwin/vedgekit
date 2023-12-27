@@ -1,4 +1,4 @@
-import type { SessionManager } from '$lib/server/session';
+import type { SessionManager } from '$lib/session/server';
 
 export const getCartId = async (
 	session: InstanceType<typeof SessionManager>,

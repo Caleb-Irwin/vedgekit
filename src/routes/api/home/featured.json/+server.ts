@@ -1,7 +1,7 @@
 export const prerender = true;
 
 import type { RequestHandler } from './$types';
-import { SessionManager } from '$lib/server/session';
+import { SessionManager } from '$lib/session/server';
 
 export const GET: RequestHandler = async () => {
 	return new Response(JSON.stringify(_bannerImages, null, 2));

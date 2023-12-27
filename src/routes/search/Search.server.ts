@@ -1,4 +1,4 @@
-import type { SessionManager } from '$lib/server/session';
+import type { SessionManager } from '$lib/session/server';
 import type { SearchRes } from './SearchRes.server';
 
 export async function search(

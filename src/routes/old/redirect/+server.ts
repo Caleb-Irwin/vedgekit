@@ -1,6 +1,6 @@
 import { redirect } from '@sveltejs/kit';
 import type { RequestHandler } from './$types';
-import type { Session } from '$lib/server/session';
+import type { Session } from '$lib/session/server';
 
 export const GET: RequestHandler = async ({ url, locals: { session } }) => {
 	await session.ready;
