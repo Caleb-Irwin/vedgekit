@@ -14,7 +14,7 @@
 
 	onMount(async () => {
 		const res = await data.search;
-		totalItems = res.searchResults.productCount;
+		totalItems = res.totalItems;
 	});
 </script>
 

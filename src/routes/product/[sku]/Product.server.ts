@@ -1,11 +1,23 @@
 import type { SessionManager } from '$lib/session/server';
 import type { ProductRes } from './ProductRes.server';
 
+export interface Product {
+	sku: string;
+	name: string;
+	price: string;
+	uom: string;
+	images: { src: string; alt: string }[];
+	inStock: boolean;
+	onSale: boolean;
+	longDescHtml: string;
+	displayAttributesHtml: string;
+}
+
 export async function getProduct(
 	sku: string,
 	session: SessionManager,
 	customFetch?: typeof fetch
-): Promise<ProductRes> {
+): Promise<Product> {
 	const res = await session.req(
 		'/productDetailInfo',
 		{},
@@ -16,5 +28,30 @@ export async function getProduct(
 		},
 		customFetch
 	);
-	return await res.json<ProductRes>();
+	const raw = await res.json<ProductRes>();
+	const {
+		name,
+		itemPrice: price,
+		uom,
+		mediaDtos,
+		outOfStock,
+		longDescription: longDescHtml,
+		displayAttributes: displayAttributesHtml
+	} = raw.items[0];
+	return {
+		sku,
+		name,
+		price,
+		uom,
+		images: mediaDtos
+			.filter((v) => v.type === 'DefaultImage' || v.type === 'AdditionalImages')
+			.map((v, i) => ({
+				src: v.path,
+				alt: `Image #${i} for ${sku}`
+			})),
+		inStock: !outOfStock,
+		onSale: raw.onSale,
+		longDescHtml,
+		displayAttributesHtml
+	};
 }

@@ -1,6 +1,12 @@
+import type { ListItem } from '$lib/itemList/listItem';
 import type { SessionManager } from '$lib/session/server';
 import { getFeatured } from '../api/home/featured.json/getFeatured';
 import { search } from './Search.server';
+
+export interface Search {
+	totalItems: number;
+	items: ListItem[];
+}
 
 export async function simpleSearch(
 	searchParams: URLSearchParams,
@@ -19,14 +25,14 @@ export function simpleSearchPromise(
 	const page = parseInt(searchParams.get('page') ?? '0'),
 		featuredMode = searchParams.has('featured'),
 		searchTerm = searchParams.get('featured') ?? searchParams.get('query'),
-		searchRes = (async () =>
-			search(
+		searchRes = (async (): Promise<Search> => {
+			const res = await search(
 				featuredMode
 					? {
 							page,
-							rawQuery: (await getFeatured(customFetch))[
-								parseInt(searchParams.get('featured') ?? '0')
-							].originalSearch
+							rawQuery: (
+								await getFeatured(customFetch)
+							)[parseInt(searchParams.get('featured') ?? '0')].originalSearch
 					  }
 					: {
 							searchTerm: searchParams.get('query') ?? '',
@@ -34,7 +40,22 @@ export function simpleSearchPromise(
 					  },
 				session,
 				customFetch
-			))();
+			);
+			return {
+				totalItems: res.searchResults.productCount,
+				items: res.searchResults.solrProducts.map((item) => ({
+					productUrl: `/product/${encodeURIComponent(item.partnumber)}`,
+					imageUrl: item.basicsItems[0].listViewImgURL,
+					productNumber: item.partnumber,
+					name: item.name,
+					price: item.basicsItems[0].price,
+					uom: item.basicsItems[0].selling_UOM,
+					inStock: !item.basicsItems[0].outOfStock,
+					saleItem: item.onSale,
+					raw: item
+				}))
+			};
+		})();
 
 	return { search: searchRes, searchTerm, featuredMode, page };
 }

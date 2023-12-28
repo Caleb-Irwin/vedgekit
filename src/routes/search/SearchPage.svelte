@@ -3,13 +3,12 @@
 	import type { ListItem as ListItemT } from '$lib/itemList/listItem';
 	import { onMount } from 'svelte';
 	import IntersectionObserver from 'svelte-intersection-observer';
-	import type { SearchRes } from './SearchRes.server';
-	import type { simpleSearch } from './SimpleSearch.server';
+	import type { Search, simpleSearch } from './SimpleSearch.server';
 
 	export let grid = true,
 		totalItemsLeft: null | number = null,
 		page: number = 0,
-		serverItems: Promise<SearchRes> | null = null,
+		serverItems: Promise<Search> | null = null,
 		params: string = '';
 	let items: ListItemT[] = [],
 		el: HTMLDivElement,
@@ -25,10 +24,10 @@
 		}
 	}
 	onMount(async () => {
-		let res: SearchRes;
+		let res: Search;
 		if (serverItems) {
 			res = await serverItems;
-			totalItemsLeft = res.searchResults.productCount;
+			totalItemsLeft = res.totalItems;
 		} else {
 			const fetchRes = await fetch(`/search/page?page=${page}&${params}`);
 			if (fetchRes.status !== 200) {
@@ -37,17 +36,7 @@
 			}
 			res = ((await fetchRes.json()) as Awaited<ReturnType<typeof simpleSearch>>).search;
 		}
-		items = res.searchResults.solrProducts.map((item) => ({
-			productUrl: `/product/${encodeURIComponent(item.partnumber)}`,
-			imageUrl: item.basicsItems[0].listViewImgURL,
-			productNumber: item.partnumber,
-			name: item.name,
-			price: item.basicsItems[0].price,
-			uom: item.basicsItems[0].selling_UOM,
-			inStock: !item.basicsItems[0].outOfStock,
-			saleItem: item.onSale,
-			raw: item
-		}));
+		items = res.items;
 		loading = false;
 	});
 </script>
