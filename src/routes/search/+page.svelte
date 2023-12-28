@@ -18,9 +18,13 @@
 	});
 </script>
 
+<svelte:head>
+	<title>{data.featuredMode ? 'Featured Products' : 'Search Results'}</title>
+</svelte:head>
+
 <h1 class="p-4 pb-2 text-3xl flex">
 	<span>
-		{data.featuredMode ? `Featured Product Collection` : `Search results for "${data.searchTerm}"`}
+		{data.featuredMode ? `Featured Product Collection` : `Search Results For "${data.searchTerm}"`}
 		{#if totalItems || totalItems === 0}
 			<span class="text-tertiary-500">{totalItems} {data.featuredMode ? 'Items' : 'Results'}</span>
 		{/if}

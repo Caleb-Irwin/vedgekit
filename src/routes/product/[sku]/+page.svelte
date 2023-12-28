@@ -21,6 +21,10 @@
 	});
 </script>
 
+<svelte:head>
+	<title>{res ? res?.items[0].name : 'Product Details'}</title>
+</svelte:head>
+
 <div class="flex flex-col justify-center md:flex-row p-1 pt-2">
 	<div class="w-full md:max-w-xl flex justify-center">
 		<div class="w-full max-w-xl">
@@ -46,15 +50,21 @@
 				{data.sku}
 			</span>
 			<span
-				class="chip m-1 {res?.items[0].outOfStock
+				class="chip m-1 {!res
+					? 'variant-filled-tertiary w-[68px]'
+					: res?.items[0].outOfStock
 					? 'variant-filled-warning'
 					: 'variant-filled-secondary'}"
 			>
-				{res?.items[0].outOfStock ? 'Backorder' : 'In Stock'}
+				{!res ? '-' : res?.items[0].outOfStock ? 'Backorder' : 'In Stock'}
 			</span>
 		</h2>
 		<AddToCart sku={data.sku} large />
-		<div class="pt-4">{@html res?.items[0].longDescription}</div>
-		<div class="pt-4">{@html res?.items[0].displayAttributes}</div>
+		<div
+			class="mt-4 {!res ? 'variant-glass-tertiary rounded-md animate-pulse text-transparent' : ''}"
+		>
+			{@html res?.items[0].longDescription ?? '<br/><br/><br/>'}
+		</div>
+		<div class="pt-4">{@html res?.items[0].displayAttributes ?? ''}</div>
 	</div>
 </div>

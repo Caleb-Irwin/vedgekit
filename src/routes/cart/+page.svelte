@@ -33,6 +33,10 @@
 	}
 </script>
 
+<svelte:head>
+	<title>Cart</title>
+</svelte:head>
+
 <h1 class="p-4 pb-2 text-3xl">Cart</h1>
 
 <div class="p-2 lg:space-x-2 space-y-2 lg:space-y-0 flex flex-col lg:flex-row items-start">

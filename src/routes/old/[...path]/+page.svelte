@@ -5,4 +5,8 @@
 	export let data: PageData;
 </script>
 
+<svelte:head>
+	<title>Old Site</title>
+</svelte:head>
+
 <Proxy path={data.path} session={data.sessionJwt} />

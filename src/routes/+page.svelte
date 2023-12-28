@@ -7,6 +7,10 @@
 	export let data: PageData;
 </script>
 
+<svelte:head>
+	<title>Vedgekit Home</title>
+</svelte:head>
+
 <div class="h-screen w-full flex justify-center items-center">
 	<div class="w-full space-y-10 text-center flex flex-col items-center p-2">
 		<section class="img-bg" />
