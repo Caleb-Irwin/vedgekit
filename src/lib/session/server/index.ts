@@ -201,11 +201,16 @@ export class SessionManager {
 		path: string,
 		reqInit?: RequestInit<RequestInitCfProperties>,
 		conf?: ReqConf,
-		customFetch?: typeof fetch
-	) {
+		customFetch?: typeof fetch,
+		retry = true
+	): Promise<Response> {
 		await this.readyGuard();
 		const res = await req(path, this.session as Session, reqInit, conf, customFetch);
 		await this.updateFromResponse(res);
+		if (res.status === 401 && retry) {
+			await this.init(undefined, 'refresh');
+			return await this.req(path, reqInit, conf, customFetch, false);
+		}
 		return res;
 	}
 }
