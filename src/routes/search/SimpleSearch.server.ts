@@ -24,7 +24,7 @@ export function simpleSearchPromise(
 ) {
 	const page = parseInt(searchParams.get('page') ?? '0'),
 		featuredMode = searchParams.has('featured'),
-		searchTerm = searchParams.get('featured') ?? searchParams.get('query'),
+		searchTerm = searchParams.get('featured') ?? searchParams.get('query') ?? '',
 		searchRes = (async (): Promise<Search> => {
 			const res = await search(
 				featuredMode
@@ -35,7 +35,7 @@ export function simpleSearchPromise(
 							)[parseInt(searchParams.get('featured') ?? '0')].originalSearch
 					  }
 					: {
-							searchTerm: searchParams.get('query') ?? '',
+							searchTerm: searchTerm === '' ? '*' : searchTerm,
 							page
 					  },
 				session,
@@ -57,5 +57,10 @@ export function simpleSearchPromise(
 			};
 		})();
 
-	return { search: searchRes, searchTerm, featuredMode, page };
+	return {
+		search: searchRes,
+		searchTerm: searchTerm === '' ? 'All' : searchTerm,
+		featuredMode,
+		page
+	};
 }

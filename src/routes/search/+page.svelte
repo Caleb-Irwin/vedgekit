@@ -12,10 +12,20 @@
 	let grid = true,
 		totalItems: null | number = null;
 
-	onMount(async () => {
+	$: {
+		data.search;
+		load();
+	}
+
+	onMount(() => {
+		load();
+	});
+
+	const load = async () => {
+		totalItems = null;
 		const res = await data.search;
 		totalItems = res.totalItems;
-	});
+	};
 </script>
 
 <svelte:head>
@@ -45,5 +55,7 @@
 		? 'grid-cols-2 sm:grid-cols-3 md:grid-cols-4 xl:grid-cols-6 '
 		: 'grid-cols-1'}"
 >
-	<SearchPage {grid} page={data.page} params={data.params} serverItems={data.search} />
+	{#key data.search}
+		<SearchPage {grid} page={data.page} params={data.params} serverItems={data.search} />
+	{/key}
 </div>

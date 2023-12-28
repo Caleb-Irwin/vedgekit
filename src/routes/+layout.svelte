@@ -12,6 +12,7 @@
 	import { navigating } from '$app/stores';
 	import { fade } from 'svelte/transition';
 	import { afterNavigate } from '$app/navigation';
+	import Nav from './Nav.svelte';
 
 	export let data: LayoutData;
 	saveSession(data);
@@ -24,18 +25,7 @@
 <!-- App Shell -->
 <AppShell>
 	<svelte:fragment slot="header">
-		<!-- App Bar -->
-		<AppBar>
-			<svelte:fragment slot="lead">
-				<strong class="text-xl uppercase">Vedgekit</strong>
-			</svelte:fragment>
-			<svelte:fragment slot="trail">
-				<LightSwitch />
-				<a class="btn btn-sm variant-ghost-surface" href="/"> Home </a>
-				<a class="btn btn-sm variant-ghost-surface" href="/old"> Old </a>
-				<a class="btn btn-sm variant-ghost-surface" href="/cart"> Cart </a>
-			</svelte:fragment>
-		</AppBar>
+		<Nav />
 	</svelte:fragment>
 
 	<div id="page" class="h-0 w-full" />
