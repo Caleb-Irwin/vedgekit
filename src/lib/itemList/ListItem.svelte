@@ -34,7 +34,7 @@
 	{/if}
 
 	<div class="{grid ? 'px-1' : 'px-2'} flex-grow-[10] w-full basis-12">
-		<a href={item.productUrl} class="font-semibold hover:underline">{item.name}</a>
+		<a href={item.productUrl} class="font-semibold hover:underline block w-full">{item.name}</a>
 		<p class="my-1">
 			<span class="text-lg">
 				${item.price}

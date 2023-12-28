@@ -44,7 +44,11 @@
 		redirectProductPages: boolean;
 	}
 
-	let proxyState: ProxyState = { showNavBar: false, showFooter: false, redirectProductPages: true },
+	let proxyState: ProxyState = {
+			showNavBar: true,
+			showFooter: true,
+			redirectProductPages: false
+		},
 		initProxyState: ProxyState = {
 			showNavBar: true,
 			showFooter: true,
@@ -97,17 +101,15 @@
 	}
 </script>
 
-<div class="w-full h-full flex flex-col {firstLoad ? '' : 'bg-white'}">
+<div class="w-full h-full flex flex-col bg-white">
 	{#if isLoading}
 		<div
-			out:fade={{ duration: 300 }}
+			transition:fade={{ duration: 200 }}
 			id=""
-			class="absolute w-full h-full grid place-content-center bg-white {firstLoad
-				? 'animate-fade'
-				: ''}"
+			class="absolute w-full h-full grid place-content-center variant-glass"
 		>
-			<div in:fade={{ duration: 500 }} class="grid place-content-center p-4 card rounded-full">
-				<ProgressRadial width="w-24" stroke={100} />
+			<div class="grid place-content-center p-4">
+				<ProgressRadial />
 			</div>
 		</div>
 	{/if}

@@ -9,4 +9,6 @@
 	<title>Old Site</title>
 </svelte:head>
 
-<Proxy path={data.path} session={data.sessionJwt} />
+{#key data.path}
+	<Proxy path={data.path} session={data.sessionJwt} />
+{/key}

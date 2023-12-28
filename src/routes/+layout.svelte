@@ -13,17 +13,23 @@
 	import { fade } from 'svelte/transition';
 	import { afterNavigate } from '$app/navigation';
 	import Nav from './Nav.svelte';
+	import NavSide from './NavSide.svelte';
 
 	export let data: LayoutData;
 	saveSession(data);
+
+	import { initializeStores, Drawer } from '@skeletonlabs/skeleton';
+	initializeStores();
 
 	afterNavigate(() => {
 		document.getElementById('page')?.scrollTo(0, 0);
 	});
 </script>
 
+<NavSide />
+
 <!-- App Shell -->
-<AppShell>
+<AppShell slotSidebarLeft="bg-surface-500/5 ">
 	<svelte:fragment slot="header">
 		<Nav />
 	</svelte:fragment>

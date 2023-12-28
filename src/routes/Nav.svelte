@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { AppBar } from '@skeletonlabs/skeleton';
+	import { AppBar, getDrawerStore } from '@skeletonlabs/skeleton';
 	import {
 		faBars,
 		faCartShopping,
@@ -8,12 +8,13 @@
 	} from '@fortawesome/free-solid-svg-icons/index';
 	import Fa from 'svelte-fa';
 	import { onNavigate } from '$app/navigation';
-	import { enhance } from '$app/forms';
 
 	let searchMode = false;
 	onNavigate(() => {
 		searchMode = false;
 	});
+
+	const drawerStore = getDrawerStore();
 </script>
 
 {#if !searchMode}
@@ -25,7 +26,7 @@
 		padding="p-1"
 	>
 		<svelte:fragment slot="lead">
-			<button class="btn btn-icon-xl">
+			<button class="btn btn-icon-xl" on:click={() => drawerStore.open()}>
 				<Fa icon={faBars} />
 			</button>
 		</svelte:fragment>
@@ -33,7 +34,6 @@
 			>Vedge<span class="font-bold text-primary-500">kit</span></a
 		>
 		<svelte:fragment slot="trail">
-			<!-- <LightSwitch /> -->
 			<div class="flex">
 				<button class="btn btn-icon btn-icon-lg" on:click={() => (searchMode = true)}>
 					<Fa icon={faSearch} />

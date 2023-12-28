@@ -49,7 +49,7 @@
 			</span>
 			<span
 				class="chip m-1 {!product
-					? 'variant-filled-tertiary w-[68px]'
+					? 'variant-filled-secondary w-[68px]'
 					: product?.inStock
 					? 'variant-filled-secondary'
 					: 'variant-filled-warning'}"
