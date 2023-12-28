@@ -10,7 +10,7 @@
 <div class="h-screen w-full flex justify-center items-center">
 	<div class="w-full space-y-10 text-center flex flex-col items-center p-2">
 		<section class="img-bg" />
-		<h2 class="text-4xl">Vedgekit.</h2>
+		<h1 class="h1">Vedgekit.</h1>
 		<form
 			action="/search"
 			method="get"

@@ -45,6 +45,7 @@
 			price: item.basicsItems[0].price,
 			uom: item.basicsItems[0].selling_UOM,
 			inStock: !item.basicsItems[0].outOfStock,
+			saleItem: item.onSale,
 			raw: item
 		}));
 		loading = false;

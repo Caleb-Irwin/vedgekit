@@ -21,7 +21,7 @@
 <h1 class="p-4 pb-2 text-3xl flex">
 	<span>
 		{data.featuredMode ? `Featured Product Collection` : `Search results for "${data.searchTerm}"`}
-		{#if totalItems}
+		{#if totalItems || totalItems === 0}
 			<span class="text-tertiary-500">{totalItems} {data.featuredMode ? 'Items' : 'Results'}</span>
 		{/if}
 	</span>

@@ -1,7 +1,12 @@
 import type { PageServerLoad } from './$types';
+import { getProduct } from './product.server';
 
-export const load: PageServerLoad = async ({ params }) => {
+export const load: PageServerLoad = async ({ params: { sku }, fetch, locals: { session } }) => {
+	const product = getProduct(sku, session, fetch);
+
 	return {
-		path: `/productdetails.do?sku=${params.sku}&cc={vStoreId}&langId={lang}`
+		product,
+		sku,
+		...session.stream([product])
 	};
 };

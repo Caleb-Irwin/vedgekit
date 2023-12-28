@@ -9,7 +9,6 @@
 
 	import { format } from '$lib/formatPrice';
 	import { enhance } from '$app/forms';
-	import { ProgressRadial } from '@skeletonlabs/skeleton';
 	import { slide } from 'svelte/transition';
 
 	let quantity = item.quantity,
@@ -60,9 +59,7 @@
 			<span class="chip variant-soft-tertiary">
 				{item.sku}
 			</span>
-			<span
-				class="chip h-6 {item.outOfStock ? 'variant-filled-warning' : 'variant-filled-secondary'}"
-			>
+			<span class="chip {item.outOfStock ? 'variant-filled-warning' : 'variant-filled-secondary'}">
 				{item.outOfStock ? 'Backorder' : item.inventory + ' Available'}
 			</span>
 		</p>
