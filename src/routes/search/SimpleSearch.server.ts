@@ -52,7 +52,7 @@ export function simpleSearchPromise(
 					uom: item.basicsItems[0].selling_UOM,
 					inStock: !item.basicsItems[0].outOfStock,
 					saleItem: item.onSale,
-					raw: item
+					raw: undefined
 				}))
 			};
 		})();
