@@ -30,7 +30,7 @@
 				<Fa icon={faBars} />
 			</button>
 		</svelte:fragment>
-		<a href="/" class="rounded-sm p-1 bg-tertiary-200 text-tertiary-900 text-2xl font-semibold"
+		<a href="/" class="rounded-sm p-1 bg-tertiary-100 text-tertiary-900 text-2xl font-semibold"
 			>Vedge<span class="font-bold text-primary-500">kit</span></a
 		>
 		<svelte:fragment slot="trail">
