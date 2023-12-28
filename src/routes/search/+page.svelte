@@ -22,7 +22,7 @@
 	<title>{data.featuredMode ? 'Featured Products' : 'Search Results'}</title>
 </svelte:head>
 
-<h1 class="p-4 pb-2 text-3xl flex">
+<h1 class="p-4 pb-2 text-3xl flex items-center">
 	<span>
 		{data.featuredMode ? `Featured Product Collection` : `Search Results For "${data.searchTerm}"`}
 		{#if totalItems || totalItems === 0}
@@ -31,11 +31,11 @@
 	</span>
 	<span class="flex-grow" />
 	<button
-		class="btn btn-icon {grid ? 'variant-filled-tertiary' : ''}"
+		class="btn btn-icon btn-icon-lg w-12 h-12 {grid ? 'variant-filled-tertiary' : ''}"
 		on:click={() => (grid = true)}><Fa icon={faGrip} /></button
 	>
 	<button
-		class="btn btn-icon {grid ? '' : 'variant-filled-tertiary'}"
+		class="btn btn-icon btn-icon-lg w-12 h-12 {grid ? '' : 'variant-filled-tertiary'}"
 		on:click={() => (grid = false)}><Fa icon={faBars} /></button
 	>
 </h1>

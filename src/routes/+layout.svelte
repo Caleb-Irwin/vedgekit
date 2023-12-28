@@ -1,6 +1,6 @@
 <script lang="ts">
 	import '../app.postcss';
-	import { AppShell, AppBar, LightSwitch } from '@skeletonlabs/skeleton';
+	import { AppShell, AppBar, LightSwitch, ProgressRadial } from '@skeletonlabs/skeleton';
 
 	// Floating UI for Popups
 	import { computePosition, autoUpdate, flip, shift, offset, arrow } from '@floating-ui/dom';
@@ -9,9 +9,16 @@
 
 	import type { LayoutData } from './$types';
 	import { saveSession } from '$lib/session/saveSession';
+	import { navigating } from '$app/stores';
+	import { fade } from 'svelte/transition';
+	import { afterNavigate } from '$app/navigation';
 
 	export let data: LayoutData;
 	saveSession(data);
+
+	afterNavigate(() => {
+		document.getElementById('page')?.scrollTo(0, 0);
+	});
 </script>
 
 <!-- App Shell -->
@@ -30,6 +37,18 @@
 			</svelte:fragment>
 		</AppBar>
 	</svelte:fragment>
+
+	<div id="page" class="h-0 w-full" />
+
+	{#if $navigating}
+		<div
+			transition:fade={{ duration: 200 }}
+			class="z-50 absolute variant-glass w-full h-full grid place-content-center"
+		>
+			<ProgressRadial />
+		</div>
+	{/if}
+
 	<!-- Page Route Content -->
 	<slot />
 </AppShell>

@@ -1,12 +1,20 @@
 <script lang="ts">
 	import type { ListItem } from './listItem';
 	import AddToCart from './AddToCart.svelte';
+	import { preloadData } from '$app/navigation';
 
 	export let item: ListItem,
 		grid = true;
 </script>
 
 <div
+	on:mouseover|once={() => {
+		preloadData(item.productUrl);
+	}}
+	on:focus|once={() => {
+		preloadData(item.productUrl);
+	}}
+	role="region"
 	class="card max-w-none w-full h-full p-2 flex justify-center items-center {grid
 		? 'flex-col'
 		: 'flex-row flex-wrap'}"
