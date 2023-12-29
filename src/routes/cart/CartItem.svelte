@@ -2,7 +2,7 @@
 	import type { Cart, CartItem } from '$lib/cart/getCart';
 	import Fa from 'svelte-fa';
 	import { faTrash, faPen } from '@fortawesome/free-solid-svg-icons';
-	import { debounce } from 'lodash';
+	import { debounce } from 'lodash-es';
 
 	export let item: CartItem,
 		cartPromise: Promise<Cart> | undefined = undefined;

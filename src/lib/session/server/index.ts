@@ -132,7 +132,10 @@ export class SessionManager {
 
 	store(force: boolean = false) {
 		if (this.storeCookies || force) {
-			this.cookies?.set('session', this.jwt as string, { path: '/' });
+			this.cookies?.set('session', this.jwt as string, {
+				path: '/',
+				expires: new Date(Date.now() + 30 * 60 * 1000)
+			});
 			this.lastStored = this.jwt;
 		}
 	}
