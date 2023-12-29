@@ -32,7 +32,7 @@ export function simpleSearchPromise(
 							page,
 							rawQuery: (
 								await getFeatured(customFetch)
-							)[parseInt(searchParams.get('featured') ?? '0')].originalSearch
+							).bannerImages[parseInt(searchParams.get('featured') ?? '0')].originalSearch
 					  }
 					: {
 							searchTerm: searchTerm === '' ? '*' : searchTerm,

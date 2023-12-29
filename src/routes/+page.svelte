@@ -3,6 +3,7 @@
 	import Fa from 'svelte-fa';
 	import type { PageData } from './$types';
 	import Carousel from '$lib/home/FeaturedCarousel.svelte';
+	import ListItem from '$lib/itemList/ListItem.svelte';
 
 	export let data: PageData;
 </script>
@@ -11,9 +12,13 @@
 	<title>Vedgekit Home</title>
 </svelte:head>
 
-<div class="h-screen w-full flex justify-center items-center">
+<div class="h-full w-full flex justify-center items-start">
 	<div class="w-full space-y-10 text-center flex flex-col items-center p-2">
-		<section class="img-bg" />
+		{#if data.featured}
+			<div class="w-full aspect-[1805/351]">
+				<Carousel bannerImages={data.featured.bannerImages} />
+			</div>
+		{/if}
 		<h1 class="h1">Vedgekit.</h1>
 		<form
 			action="/search"
@@ -27,36 +32,18 @@
 				placeholder="Search Products"
 				class="input p-4 text-lg"
 			/>
-			<button class="variant-filled-primary text-lg"><Fa icon={faSearch} /> </button>
+			<button class="variant-filled-primary text-lg"><Fa icon={faSearch} /></button>
 		</form>
-		{#if data.bannerImages}
-			<div class="w-full aspect-[1805/351]"><Carousel bannerImages={data.bannerImages} /></div>
-		{/if}
+
+		<div>
+			<h3 class="text-3xl p-1">Featured Products</h3>
+			<div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6">
+				{#each data.featured.featuredProducts as item}
+					<div class="p-0.5">
+						<ListItem {item} />
+					</div>
+				{/each}
+			</div>
+		</div>
 	</div>
 </div>
-
-<style lang="postcss">
-	.img-bg {
-		@apply absolute z-[-1] rounded-full blur-[50px] transition-all;
-		animation: pulse 5s cubic-bezier(0, 0, 0, 0.5) infinite, glow 5s linear infinite;
-	}
-	@keyframes glow {
-		0% {
-			@apply bg-primary-400/50;
-		}
-		33% {
-			@apply bg-secondary-400/50;
-		}
-		66% {
-			@apply bg-tertiary-400/50;
-		}
-		100% {
-			@apply bg-primary-400/50;
-		}
-	}
-	@keyframes pulse {
-		50% {
-			transform: scale(1.5);
-		}
-	}
-</style>
