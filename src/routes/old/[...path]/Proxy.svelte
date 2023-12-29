@@ -7,7 +7,8 @@
 
 	export let path: string,
 		session: Promise<any>,
-		hideControls = false;
+		hideControls = false,
+		conf: Partial<ProxyState> = {};
 	let src = `/old/redirect?url=${encodeURIComponent(path)}`,
 		isLoading = true,
 		firstLoad = true,
@@ -47,7 +48,8 @@
 	let proxyState: ProxyState = {
 			showNavBar: true,
 			showFooter: true,
-			redirectProductPages: false
+			redirectProductPages: false,
+			...conf
 		},
 		initProxyState: ProxyState = {
 			showNavBar: true,

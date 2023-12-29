@@ -10,5 +10,10 @@
 </svelte:head>
 
 {#key data.path}
-	<Proxy path={data.path} session={data.sessionJwt} />
+	<Proxy
+		path={data.path}
+		session={data.sessionJwt}
+		hideControls={data.minimal}
+		conf={data.minimal ? { showFooter: false, showNavBar: false } : {}}
+	/>
 {/key}

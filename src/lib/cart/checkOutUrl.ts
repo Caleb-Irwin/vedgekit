@@ -1,3 +1,3 @@
 export function checkOutUrl() {
-	return `/old/guestBillingAddress.do?cc={vStoreId}&langId={lang}&cartId={vCartId}`;
+	return `/old/guestBillingAddress.do?cc={vStoreId}&langId={lang}&cartId={vCartId}&vedgekit-minimal`;
 }

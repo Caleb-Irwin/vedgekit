@@ -35,7 +35,7 @@
 			</li>
 			<li>
 				<a
-					href="/old/flyers.do?cc={'{vStoreId}'}&langId={'{lang}'}"
+					href="/old/flyers.do?cc={'{vStoreId}'}&langId={'{lang}'}&vedgekit-minimal"
 					on:click={() => drawerStore.close()}><Fa icon={faNewspaper} class="pr-2 w-6" /> Flyers</a
 				>
 			</li>
