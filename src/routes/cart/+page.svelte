@@ -90,42 +90,18 @@
 
 			<button
 				class="btn variant-filled-primary w-full my-2"
-				on:click={() => goto(checkOutUrl())}
-				data-sveltekit-preload-data="off"
-				disabled={!cart || cart.items.length === 0}>Check Out</button
+				on:click={() => goto('/cart/checkout')}
+				disabled={!cart || cart.items.length === 0}>Checkout</button
 			>
 		</div>
-		<form
-			method="POST"
-			action="?/add"
-			class="card p-4"
-			use:enhance={() => {
-				creating = true;
-				return async ({ update }) => {
-					await update();
-					creating = false;
-				};
-			}}
-		>
-			<label for="sku" class="pb-1">Add SKU To Cart</label>
-			<div class="flex">
-				<div class="input-group input-group-divider grid-cols-[auto_1fr_auto]">
-					<input name="sku" type="text" placeholder="SKU" bind:value={sku} disabled={creating} />
-					<input
-						name="quantity"
-						class="input-group-shim"
-						type="number"
-						placeholder="1"
-						bind:value={quantity}
-						disabled={creating}
-					/>
-				</div>
-				<button class="btn variant-filled-secondary ml-2" disabled={creating}>Add</button>
-			</div>
-		</form>
+
 		<button
 			class="btn variant-filled-tertiary w-full my-2"
-			on:click={() => fetch('/api/session?mode=new', { method: 'POST' })}
+			on:click={async () => {
+				if (!confirm('Are you sure you want to clear your cart?')) return;
+				await fetch('/api/session?mode=new', { method: 'POST' });
+				location.reload();
+			}}
 			data-sveltekit-preload-data={false}>Clear Cart</button
 		>
 	</div>

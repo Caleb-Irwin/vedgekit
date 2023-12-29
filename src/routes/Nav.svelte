@@ -57,7 +57,7 @@
 					name="query"
 					id=""
 					placeholder="Search Products"
-					class="input py-2"
+					class="input px-6 py-2"
 					autofocus
 				/>
 				<button class="variant-filled-primary"><Fa icon={faSearch} /> </button>
