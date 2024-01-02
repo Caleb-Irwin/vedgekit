@@ -4,7 +4,7 @@ export interface ProductRes {
 	shortDescription: null | unknown;
 	trimmedSpecifications: null | unknown;
 	productSepecifications: null | unknown;
-	recommendedCategory: (number | string)[];
+	recommendedCategory: [string, number];
 	items: Item[];
 	onSale: boolean;
 	clearance: boolean;

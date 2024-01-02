@@ -1,5 +1,7 @@
+import type { ListItem } from '$lib/itemList/listItem';
 import type { SessionManager } from '$lib/session/server';
 import type { ProductRes } from './ProductRes.server';
+import { relatedProducts } from './relatedProducts.server';
 
 export interface Product {
 	sku: string;
@@ -11,6 +13,7 @@ export interface Product {
 	onSale: boolean;
 	longDescHtml: string;
 	displayAttributesHtml: string;
+	relatedProducts: Promise<ListItem[]>;
 }
 
 export async function getProduct(
@@ -38,6 +41,7 @@ export async function getProduct(
 		longDescription: longDescHtml,
 		displayAttributes: displayAttributesHtml
 	} = raw.items[0];
+
 	return {
 		sku,
 		name,
@@ -52,6 +56,12 @@ export async function getProduct(
 		inStock: !outOfStock,
 		onSale: raw.onSale,
 		longDescHtml,
-		displayAttributesHtml
+		displayAttributesHtml,
+		relatedProducts: relatedProducts(
+			session,
+			raw.recommendedCategory[0],
+			raw.recommendedCategory[1],
+			customFetch
+		)
 	};
 }

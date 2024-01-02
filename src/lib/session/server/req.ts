@@ -9,11 +9,11 @@ export interface ReqConf {
 		others?: string;
 	} | null;
 	query?: {
-		storeId: null | string;
-		langId: null | 'en' | 'fr';
-		userId: null | string;
-		cartId: null | string;
-		deptId: null | '0';
+		storeId?: null | string;
+		langId?: null | 'en' | 'fr';
+		userId?: null | string;
+		cartId?: null | string;
+		deptId?: null | '0';
 	} | null;
 	customQuery?: {
 		[name: string]: string;

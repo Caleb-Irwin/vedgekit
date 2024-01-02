@@ -1,16 +1,30 @@
 <script lang="ts">
-	import { onMount } from 'svelte';
 	import type { PageData } from './$types';
 	import ProductImages from './ProductImages.svelte';
 	import { saveSession } from '$lib/session/saveSession';
 	import AddToCart from '$lib/itemList/AddToCart.svelte';
+	import ItemCarousel from '$lib/itemList/ItemCarousel.svelte';
+	import { browser } from '$app/environment';
+	import type { ListItem } from '$lib/itemList/listItem';
 
 	export let data: PageData;
 	saveSession(data);
-	let product: Awaited<typeof data.product> | null;
-	onMount(async () => {
-		product = await data.product;
-	});
+
+	let product: Awaited<typeof data.product> | null = null,
+		items: ListItem[] | null = null;
+	$: {
+		data.product;
+		update();
+	}
+	const update = async () => {
+		product = null;
+		items = null;
+
+		if (browser) {
+			product = await data.product;
+			items = await product.relatedProducts;
+		}
+	};
 </script>
 
 <svelte:head>
@@ -67,4 +81,7 @@
 		</div>
 		<div class="pt-4">{@html product?.displayAttributesHtml ?? ''}</div>
 	</div>
+</div>
+<div class="w-full p-1.5 pt-4">
+	<ItemCarousel title="Similar Products" {items} />
 </div>
