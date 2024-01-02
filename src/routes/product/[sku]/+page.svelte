@@ -82,6 +82,6 @@
 		<div class="pt-4">{@html product?.displayAttributesHtml ?? ''}</div>
 	</div>
 </div>
-<div class="w-full p-1.5 pt-4">
+<div class="w-full pt-4">
 	<ItemCarousel title="Similar Products" {items} />
 </div>

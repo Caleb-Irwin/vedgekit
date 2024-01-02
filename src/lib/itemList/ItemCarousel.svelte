@@ -10,8 +10,10 @@
 	{#if title}
 		<h3 class="text-3xl p-1 text-center">{title}</h3>
 	{/if}
-	<div class="w-full h-full snap-x snap-mandatory scroll-smooth flex overflow-x-auto">
-		<div class="flex-grow" />
+	<div
+		class="w-full h-full snap-x snap-mandatory scroll-smooth flex overflow-x-auto shadow-inherit"
+	>
+		<div class="flex-grow snap-start flex-shrink-0 w-1.5" />
 		{#each items ?? Array(6) as item}
 			<div class="snap-start flex-shrink-0 w-48 md:w-60 p-0.5">
 				{#if item}
@@ -21,6 +23,6 @@
 				{/if}
 			</div>
 		{/each}
-		<div class="flex-grow" />
+		<div class="flex-grow snap-start flex-shrink-0 w-1.5" />
 	</div>
 </div>

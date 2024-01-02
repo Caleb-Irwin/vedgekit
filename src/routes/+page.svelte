@@ -12,7 +12,7 @@
 	<title>Vedgekit Home</title>
 </svelte:head>
 
-<div class="h-full w-full flex justify-center items-start">
+<div class="h-full w-full flex flex-col justify-center items-start">
 	<div class="w-full space-y-10 text-center flex flex-col items-center p-2">
 		{#if data.featured}
 			<div class="w-full aspect-[1805/351]">
@@ -34,7 +34,6 @@
 			/>
 			<button class="variant-filled-primary text-lg"><Fa icon={faSearch} /></button>
 		</form>
-
-		<ItemCarousel title="Featured Products" items={data.featured.featuredProducts} />
 	</div>
+	<ItemCarousel title="Featured Products" items={data.featured.featuredProducts} />
 </div>
