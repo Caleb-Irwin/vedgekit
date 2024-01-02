@@ -99,7 +99,7 @@
 			on:click|preventDefault={() => quantity--}>-</button
 		>
 		<input
-			class="quantity-input w-12 p-0 bg-transparent border-x-0 border-y-[1px] {quantity &&
+			class="quantity-input w-8 p-0 bg-transparent border-x-0 border-y-[1px] {quantity &&
 			quantity >= 1
 				? 'border-tertiary-500'
 				: 'border-error-500'}  text-center remove-arrow"

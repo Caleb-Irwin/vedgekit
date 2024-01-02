@@ -70,7 +70,7 @@
 	>
 		{#each bannerImages ?? [] as { imageUrl, index }}
 			<a href="/search?featured={index}" class="shrink-0 snap-center w-full aspect-[1805/351]">
-				<img class="h-full w-full rounded-container-token" src={imageUrl} alt="" />
+				<img class="h-full w-full rounded-container-token px-0.5" src={imageUrl} alt="" />
 			</a>
 		{/each}
 	</div>

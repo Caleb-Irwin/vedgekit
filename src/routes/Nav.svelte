@@ -24,6 +24,7 @@
 		slotDefault="place-self-center"
 		slotTrail="place-content-end"
 		padding="p-1"
+		shadow="shadow-md"
 	>
 		<svelte:fragment slot="lead">
 			<button class="btn btn-icon-xl" on:click={() => drawerStore.open()}>

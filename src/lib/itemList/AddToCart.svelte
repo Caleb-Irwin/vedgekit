@@ -6,9 +6,15 @@
 	export let sku: string,
 		large = false;
 
+	$: {
+		sku;
+		success = false;
+	}
+
 	let qty = 1,
 		updatingQuantity = false,
-		success = false;
+		success = false,
+		form: HTMLFormElement;
 </script>
 
 <form
@@ -25,6 +31,7 @@
 	method="post"
 	action="/cart?/add"
 	class="flex flex-row justify-center flex-wrap space-y-1"
+	bind:this={form}
 >
 	<div
 		class="mr-1.5 btn-group {success
@@ -53,6 +60,12 @@
 			size="4"
 			bind:value={qty}
 			on:change={() => (success = false)}
+			on:keydown={(e) => {
+				if (e.key === 'Enter') {
+					e.preventDefault();
+					form.requestSubmit();
+				}
+			}}
 			disabled={updatingQuantity}
 		/>
 		<button
