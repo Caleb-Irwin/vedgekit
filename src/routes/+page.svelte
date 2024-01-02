@@ -3,7 +3,7 @@
 	import Fa from 'svelte-fa';
 	import type { PageData } from './$types';
 	import Carousel from '$lib/home/FeaturedCarousel.svelte';
-	import ListItem from '$lib/itemList/ListItem.svelte';
+	import ItemCarousel from '$lib/itemList/ItemCarousel.svelte';
 
 	export let data: PageData;
 </script>
@@ -35,15 +35,6 @@
 			<button class="variant-filled-primary text-lg"><Fa icon={faSearch} /></button>
 		</form>
 
-		<div>
-			<h3 class="text-3xl p-1">Featured Products</h3>
-			<div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6">
-				{#each data.featured.featuredProducts as item}
-					<div class="p-0.5">
-						<ListItem {item} />
-					</div>
-				{/each}
-			</div>
-		</div>
+		<ItemCarousel title="Featured Products" items={data.featured.featuredProducts} />
 	</div>
 </div>
