@@ -3,19 +3,24 @@
 	import type { ListItem as ListItemT } from './listItem';
 
 	export let items: ListItemT[] | null,
-		title: string | undefined = undefined;
+		title: string | undefined = undefined,
+		carosuel = false;
 </script>
 
 <div class="w-full">
 	{#if title}
-		<h3 class="text-3xl p-1 text-center">{title}</h3>
+		<h3 class="text-2xl p-1 text-center">{title}</h3>
 	{/if}
 	<div
-		class="w-full h-full snap-x snap-mandatory scroll-smooth flex overflow-x-auto shadow-inherit"
+		class="w-full h-full {!carosuel
+			? 'grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 xl:grid-cols-6'
+			: 'snap-x snap-mandatory scroll-smooth flex overflow-x-auto shadow-inherit'} "
 	>
-		<div class="flex-grow snap-start flex-shrink-0 w-1.5" />
+		{#if carosuel}
+			<div class="flex-grow snap-start flex-shrink-0 w-1.5" />
+		{/if}
 		{#each items ?? Array(6) as item}
-			<div class="snap-start flex-shrink-0 w-48 md:w-60 p-0.5">
+			<div class="{carosuel ? 'snap-start flex-shrink-0 w-48 md:w-60' : ''} p-0.5">
 				{#if item}
 					<ListItem {item} />
 				{:else}
@@ -23,6 +28,8 @@
 				{/if}
 			</div>
 		{/each}
-		<div class="flex-grow snap-start flex-shrink-0 w-1.5" />
+		{#if carosuel}
+			<div class="flex-grow snap-start flex-shrink-0 w-1.5" />
+		{/if}
 	</div>
 </div>
