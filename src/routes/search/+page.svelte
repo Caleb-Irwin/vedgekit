@@ -50,8 +50,6 @@
 		}),
 		restore: (v) => {
 			if ((data.params = v.params)) {
-				console.log('restore', v);
-
 				pages = v.pages;
 				totalItems = v.totalItems;
 				grid = v.grid;

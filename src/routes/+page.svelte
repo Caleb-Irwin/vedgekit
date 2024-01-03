@@ -9,7 +9,7 @@
 </script>
 
 <svelte:head>
-	<title>Vedgekit Home</title>
+	<title>Vedgekit</title>
 </svelte:head>
 
 <div class="h-full w-full flex flex-col justify-center items-start">
