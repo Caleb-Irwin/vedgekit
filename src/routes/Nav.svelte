@@ -1,3 +1,12 @@
+<script lang="ts" context="module">
+	const searchMode = writable(false),
+		query = writable('');
+	export function openSearch(searchTerm: string) {
+		searchMode.set(true);
+		query.set(searchTerm);
+	}
+</script>
+
 <script lang="ts">
 	import { AppBar, getDrawerStore } from '@skeletonlabs/skeleton';
 	import {
@@ -8,16 +17,17 @@
 	} from '@fortawesome/free-solid-svg-icons/index';
 	import Fa from 'svelte-fa';
 	import { onNavigate } from '$app/navigation';
+	import { writable } from 'svelte/store';
 
-	let searchMode = false;
+	searchMode.set(false);
 	onNavigate(() => {
-		searchMode = false;
+		searchMode.set(false);
 	});
 
 	const drawerStore = getDrawerStore();
 </script>
 
-{#if !searchMode}
+{#if !$searchMode}
 	<!-- App Bar -->
 	<AppBar
 		gridColumns="grid-cols-3"
@@ -36,7 +46,13 @@
 		>
 		<svelte:fragment slot="trail">
 			<div class="flex">
-				<button class="btn btn-icon btn-icon-lg" on:click={() => (searchMode = true)}>
+				<button
+					class="btn btn-icon btn-icon-lg"
+					on:click={() => {
+						query.set('');
+						searchMode.set(true);
+					}}
+				>
 					<Fa icon={faSearch} />
 				</button>
 				<a class="btn btn-icon btn-icon-lg" href="/cart">
@@ -56,6 +72,7 @@
 				<input
 					type="text"
 					name="query"
+					bind:value={$query}
 					id=""
 					placeholder="Search Products"
 					class="input px-6 py-2"
@@ -63,14 +80,14 @@
 				/>
 				<button class="variant-filled-primary"><Fa icon={faSearch} /> </button>
 			</form>
-			<button on:click={() => (searchMode = false)} class="btn btn-icon-xl h-[55px] px-0">
+			<button on:click={() => searchMode.set(false)} class="btn btn-icon-xl h-[55px] px-0">
 				<Fa icon={faClose} />
 			</button>
 		</div>
 	</AppBar>
 	<button
 		on:click={() => {
-			searchMode = false;
+			searchMode.set(false);
 		}}
 		class="z-40 absolute variant-glass w-full h-full"
 	/>

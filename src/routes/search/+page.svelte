@@ -1,10 +1,11 @@
 <script lang="ts">
 	import Fa from 'svelte-fa';
 	import type { PageData } from './$types';
-	import { faBars, faGrip } from '@fortawesome/free-solid-svg-icons/index';
+	import { faBars, faEdit, faGrip } from '@fortawesome/free-solid-svg-icons/index';
 	import { onMount } from 'svelte';
 	import SearchPage from './SearchPage.svelte';
 	import { saveSession } from '$lib/session/saveSession';
+	import { openSearch } from '../Nav.svelte';
 
 	export let data: PageData;
 	saveSession(data);
@@ -35,19 +36,29 @@
 <h1 class="p-4 pb-2 text-3xl flex items-center">
 	<span>
 		{data.featuredMode ? `Featured Product Collection` : `Search Results For "${data.searchTerm}"`}
+		{#if !data.featuredMode}
+			<button
+				on:click={() => {
+					openSearch(data.searchTerm);
+				}}
+				class="hover:text-tertiary-500"><Fa size="0.75x" icon={faEdit} /></button
+			>
+		{/if}
 		{#if totalItems || totalItems === 0}
 			<span class="text-tertiary-500">{totalItems} {data.featuredMode ? 'Items' : 'Results'}</span>
 		{/if}
 	</span>
 	<span class="flex-grow" />
-	<button
-		class="btn btn-icon btn-icon-lg w-12 h-12 {grid ? 'variant-filled-tertiary' : ''}"
-		on:click={() => (grid = true)}><Fa icon={faGrip} /></button
-	>
-	<button
-		class="btn btn-icon btn-icon-lg w-12 h-12 {grid ? '' : 'variant-filled-tertiary'}"
-		on:click={() => (grid = false)}><Fa icon={faBars} /></button
-	>
+	<div class="flex flex-col sm:flex-row rounded-full p-1 variant-outline-tertiary border-[1px]">
+		<button
+			class="btn btn-icon btn-icon-lg w-12 h-12 {grid ? 'variant-filled-tertiary' : ''}"
+			on:click={() => (grid = true)}><Fa icon={faGrip} /></button
+		>
+		<button
+			class="btn btn-icon btn-icon-lg w-12 h-12 {grid ? '' : 'variant-filled-tertiary'}"
+			on:click={() => (grid = false)}><Fa icon={faBars} /></button
+		>
+	</div>
 </h1>
 
 <div
