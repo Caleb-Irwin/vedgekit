@@ -148,13 +148,7 @@
 	</div>
 	{#if writeNote}
 		<div class="pt-2 w-full">
-			<div class="w-full flex justify-end z-20">
-				<span
-					class="absolute m-1 chip
-				variant-ghost-primary">Saved</span
-				>
-			</div>
-			<textarea class="textarea m-0 z-10" placeholder="Shopper's Notes" />
+			<textarea class="textarea m-0 z-10" placeholder="Shopper's Notes (TODO)" />
 		</div>
 	{/if}
 </div>

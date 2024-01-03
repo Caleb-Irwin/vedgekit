@@ -19,10 +19,15 @@
 	saveSession(data);
 
 	import { initializeStores, Drawer } from '@skeletonlabs/skeleton';
+	import type { AfterNavigate } from '@sveltejs/kit';
 	initializeStores();
 
-	afterNavigate(() => {
-		document.getElementById('page')?.scrollTo(0, 0);
+	afterNavigate((params: AfterNavigate) => {
+		const isNewPage = params.from?.url.pathname !== params.to?.url.pathname;
+		const elemPage = document.querySelector('#page');
+		if (isNewPage && elemPage !== null) {
+			elemPage.scrollTop = 0;
+		}
 	});
 </script>
 
@@ -33,8 +38,6 @@
 	<svelte:fragment slot="header">
 		<Nav />
 	</svelte:fragment>
-
-	<div id="page" class="h-0 w-full" />
 
 	{#if $navigating}
 		<div

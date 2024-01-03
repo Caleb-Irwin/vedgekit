@@ -1,6 +1,4 @@
 <script lang="ts">
-	import { enhance } from '$app/forms';
-	import { checkOutUrl } from '$lib/cart/checkOutUrl';
 	import type { PageData } from './$types';
 	import CartItem from './CartItem.svelte';
 	import { format } from '$lib/formatPrice';
@@ -14,12 +12,9 @@
 	export let data: PageData;
 	saveSession(data);
 
-	let sku = '51-0812',
-		quantity = 1,
-		cart: Cart | null = null,
+	let cart: Cart | null = null,
 		loadCart: Cart | undefined,
-		lastLoadCart: Cart | undefined,
-		creating = false;
+		lastLoadCart: Cart | undefined;
 
 	$: cart = loadCart ?? lastLoadCart ?? null;
 
@@ -66,12 +61,12 @@
 
 			<label class="label px-2" for="orderNotes">
 				<span class="hidden">Order Notes</span>
-				<textarea class="textarea" name="orderNotes" placeholder="Notes To Order Desk" />
+				<textarea class="textarea" name="orderNotes" placeholder="Notes To Order Desk (TODO)" />
 			</label>
 			<div class="p-2">
 				<div class="input-group input-group-divider grid-cols-[auto_1fr_auto]">
 					<div class="input-group-shim"><Fa icon={faTag} /></div>
-					<input type="search" placeholder="Coupon Code" />
+					<input type="search" placeholder="Coupon Code (TODO)" />
 					<button class="variant-filled-tertiary text-center"><Fa icon={faArrowRight} /></button>
 				</div>
 			</div>

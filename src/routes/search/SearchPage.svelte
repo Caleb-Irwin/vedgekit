@@ -1,61 +1,42 @@
 <script lang="ts">
 	import ListItem from '$lib/itemList/ListItem.svelte';
-	import type { ListItem as ListItemT } from '$lib/itemList/listItem';
-	import { onMount } from 'svelte';
 	import IntersectionObserver from 'svelte-intersection-observer';
-	import type { Search, simpleSearch } from './SimpleSearch.server';
+	import type { searchStore } from './searchStore';
 
 	export let grid = true,
-		totalItemsLeft: null | number = null,
-		page: number = 0,
-		serverItems: Promise<Search> | null = null,
-		params: string = '';
-	let items: ListItemT[] = [],
-		el: HTMLDivElement,
+		page: number,
+		pages: ReturnType<typeof searchStore>,
+		totalItemsLeft: null | number = null;
+
+	$: pageItems = $pages[page].items;
+
+	let el: HTMLDivElement,
 		onScreen: boolean,
-		nextPage = false,
-		loading = true;
-	$: {
-		if (totalItemsLeft && serverItems) loading = false;
-	}
+		nextPage = false;
+
 	$: {
 		if (!nextPage && totalItemsLeft && totalItemsLeft > 12 && (page === 0 || onScreen)) {
 			nextPage = true;
+			if (!$pages[page + 1]) pages.getPage(page + 1);
 		}
 	}
-	onMount(async () => {
-		let res: Search;
-		if (serverItems) {
-			res = await serverItems;
-			totalItemsLeft = res.totalItems;
-		} else {
-			const fetchRes = await fetch(`/search/page?page=${page}&${params}`);
-			if (fetchRes.status !== 200) {
-				alert('Failed to get more search results!');
-				return;
-			}
-			res = ((await fetchRes.json()) as Awaited<ReturnType<typeof simpleSearch>>).search;
-		}
-		items = res.items;
-		loading = false;
-	});
 </script>
 
-{#if items[0]}
+{#if pageItems[0]}
 	<IntersectionObserver element={el} bind:intersecting={onScreen} threshold={0.5}>
 		<div bind:this={el} class="p-0.5">
-			<ListItem item={items[0]} {grid} />
+			<ListItem item={pageItems[0]} {grid} />
 		</div>
 	</IntersectionObserver>
 {/if}
 
-{#each items.slice(1) as item}
+{#each pageItems.slice(1) ?? [] as item}
 	<div class="p-0.5">
 		<ListItem {item} {grid} />
 	</div>
 {/each}
 
-{#each new Array(!loading ? 0 : totalItemsLeft === null ? 12 : totalItemsLeft > 12 ? 12 : totalItemsLeft) as _}
+{#each new Array((pageItems && pageItems.length > 0) || totalItemsLeft === 0 ? 0 : totalItemsLeft === null ? 12 : totalItemsLeft > 12 ? 12 : totalItemsLeft) as _}
 	<div class="p-0.5">
 		<div
 			class="card w-full h-full {grid
@@ -64,7 +45,3 @@
 		/>
 	</div>
 {/each}
-
-{#if nextPage && totalItemsLeft}
-	<svelte:self {grid} page={page + 1} totalItemsLeft={totalItemsLeft - 12} {params} />
-{/if}

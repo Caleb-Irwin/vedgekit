@@ -2,30 +2,66 @@
 	import Fa from 'svelte-fa';
 	import type { PageData } from './$types';
 	import { faBars, faEdit, faGrip } from '@fortawesome/free-solid-svg-icons/index';
-	import { onMount } from 'svelte';
 	import SearchPage from './SearchPage.svelte';
 	import { saveSession } from '$lib/session/saveSession';
 	import { openSearch } from '../Nav.svelte';
+	import { searchStore } from './searchStore';
+	import { browser } from '$app/environment';
+	import type { Snapshot } from '../$types';
+	import { tick } from 'svelte';
 
 	export let data: PageData;
 	saveSession(data);
 
 	let grid = true,
-		totalItems: null | number = null;
+		totalItems: null | number = null,
+		pages = searchStore(data.params),
+		restored: string | undefined;
 
 	$: {
 		data.search;
 		load();
 	}
 
-	onMount(() => {
-		load();
-	});
-
 	const load = async () => {
-		totalItems = null;
-		const res = await data.search;
-		totalItems = res.totalItems;
+		if (browser && data.params !== restored) {
+			totalItems = null;
+			pages = searchStore(data.params);
+			pages.addPage([], 0);
+			const res = await data.search;
+			totalItems = res.totalItems;
+			pages.addPage(res.items, 0);
+		}
+	};
+
+	export const snapshot: Snapshot<{
+		pages: ReturnType<typeof searchStore>;
+		totalItems: number | null;
+		grid: boolean;
+		params: string;
+		scroll: number;
+	}> = {
+		capture: () => ({
+			pages,
+			totalItems,
+			grid,
+			params: data.params,
+			scroll: document.querySelector('#page')?.scrollTop ?? 0
+		}),
+		restore: (v) => {
+			if ((data.params = v.params)) {
+				console.log('restore', v);
+
+				pages = v.pages;
+				totalItems = v.totalItems;
+				grid = v.grid;
+				restored = data.params;
+				tick().then(() => {
+					const el = document.querySelector('#page');
+					if (el) el.scrollTop = v.scroll;
+				});
+			}
+		}
 	};
 </script>
 
@@ -67,6 +103,13 @@
 		: 'grid-cols-1'}"
 >
 	{#key data.search}
-		<SearchPage {grid} page={data.page} params={data.params} serverItems={data.search} />
+		{#each $pages as _, i}
+			<SearchPage
+				{grid}
+				page={i}
+				{pages}
+				totalItemsLeft={totalItems !== null ? totalItems - 12 * i : null}
+			/>
+		{/each}
 	{/key}
 </div>
