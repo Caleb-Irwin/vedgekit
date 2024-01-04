@@ -9,6 +9,10 @@
 	data.cart.then((c) => cart.updateCart(c));
 </script>
 
+<svelte:head>
+	<title>Order Successful</title>
+</svelte:head>
+
 <div class="w-full h-full grid place-content-center">
 	<div class="flex flex-col justify-center items-center card p-8">
 		<Fa size="4x" icon={faCheckCircle} class="text-primary-500" />

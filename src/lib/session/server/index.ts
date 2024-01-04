@@ -2,7 +2,8 @@ import type { Cookies } from '@sveltejs/kit';
 import setCookieParser from 'set-cookie-parser';
 import jwt from '@tsndr/cloudflare-worker-jwt';
 import { req, type ReqConf } from './req';
-import { V_HOST, JWT_SECRET, REQUIRE_AUTHORIZATION_HEADER } from '$env/static/private';
+import { JWT_SECRET, REQUIRE_AUTHORIZATION_HEADER } from '$env/static/private';
+import { PUBLIC_V_HOST } from '$env/static/public';
 
 export interface SessionPayload {
 	vSession: string;
@@ -43,7 +44,7 @@ async function getSession(
 		orginalSession = mode === 'new' ? null : await getSessionFromToken(orginalToken);
 	if (orginalSession && mode !== 'refresh') return { jwt: orginalToken, contents: orginalSession };
 
-	const res = await fetch(V_HOST, {
+	const res = await fetch(PUBLIC_V_HOST, {
 			headers: {
 				cookie:
 					orginalSession !== null && mode !== 'new'

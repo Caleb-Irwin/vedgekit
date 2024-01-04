@@ -1,5 +1,5 @@
 import type { Session } from './';
-import { V_HOST } from '$env/static/private';
+import { PUBLIC_V_HOST } from '$env/static/public';
 
 export interface ReqConf {
 	authorization?: null | string;
@@ -27,7 +27,7 @@ export async function req(
 	conf: ReqConf = {},
 	customFetch?: typeof fetch
 ) {
-	const url = new URL(V_HOST);
+	const url = new URL(PUBLIC_V_HOST);
 	url.pathname = path;
 	if (conf.query !== null) {
 		conf.query?.storeId !== null &&

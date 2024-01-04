@@ -9,7 +9,7 @@
 
 <div class="w-full">
 	{#if title}
-		<h3 class="text-2xl p-1 text-center">{title}</h3>
+		<h3 class="text-3xl p-1 text-center">{title}</h3>
 	{/if}
 	<div
 		class="w-full h-full {!carosuel

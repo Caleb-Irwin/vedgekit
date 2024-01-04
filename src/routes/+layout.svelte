@@ -21,6 +21,7 @@
 	import { initializeStores, Drawer } from '@skeletonlabs/skeleton';
 	import type { AfterNavigate } from '@sveltejs/kit';
 	import { initCartStore } from '$lib/cart/cartStore';
+	import { PUBLIC_V_HOST } from '$env/static/public';
 	initializeStores();
 
 	afterNavigate((params: AfterNavigate) => {
@@ -54,4 +55,46 @@
 
 	<!-- Page Route Content -->
 	<slot />
+
+	<svelte:fragment slot="pageFooter">
+		<div class="w-full variant-glass-surface mt-2 p-1">
+			<p class="text-center">
+				Created by <a
+					href="http://calebirwin.ca/"
+					target="_blank"
+					rel="noopener noreferrer"
+					class="underline">Caleb Irwin</a
+				>.
+
+				<br />
+				This is a test site for demonstration purposes.
+				<br />
+				Powered by
+				<a href="https://www.venxia.ca/" target="_blank" rel="noopener noreferrer" class="underline"
+					><span class="font-bold">V</span>enxia</a
+				>,
+				<a
+					href="https://www.cloudflare.com/developer-platform/workers/"
+					target="_blank"
+					rel="noopener noreferrer"
+					class="underline">Cloudflare's <span class="font-bold">Edge</span> Workers</a
+				>, and
+				<a
+					href="https://kit.svelte.dev/"
+					target="_blank"
+					rel="noopener noreferrer"
+					class="underline">Svelte<span class="font-bold">Kit</span></a
+				>. Based on
+				<a href={PUBLIC_V_HOST} target="_blank" rel="noopener noreferrer" class="underline"
+					>{new URL(PUBLIC_V_HOST).hostname}</a
+				>. View on
+				<a
+					href="https://github.com/Caleb-Irwin/vedgekit/"
+					target="_blank"
+					rel="noopener noreferrer"
+					class="underline">GitHub</a
+				>.
+			</p>
+		</div>
+	</svelte:fragment>
 </AppShell>
