@@ -62,10 +62,10 @@
 				>
 					<Fa icon={faSearch} />
 				</button>
-				<a class="btn btn-icon btn-icon-lg group" href="/cart">
+				<a class="btn btn-icon btn-icon-lg group" href="/cart" data-sveltekit-preload-code="eager">
 					<Fa icon={faCartShopping} />
 					<span
-						class="variant-filled-primary rounded-md fixed {['w-4', 'w-4', 'w-5', 'w-6', 'w-8'][
+						class="variant-filled-primary rounded-md fixed {['w-4', 'w-4', 'w-5', 'w-7', 'w-9'][
 							cartString.length
 						]} h-4 mb-4 mr-0 ml-4 text-xs font-semibold grid place-content-center group-hover:opacity-25"
 						>{cartString}</span

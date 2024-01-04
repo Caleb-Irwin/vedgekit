@@ -14,5 +14,5 @@
 	path={checkOutUrl()}
 	session={data.sessionJwt}
 	hideControls={true}
-	conf={{ showFooter: false, showNavBar: false }}
+	conf={{ showFooter: false, showNavBar: false, checkoutPage: true }}
 />

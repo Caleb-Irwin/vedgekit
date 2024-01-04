@@ -43,20 +43,23 @@
 		showNavBar: boolean;
 		showFooter: boolean;
 		redirectProductPages: boolean;
+		checkoutPage: boolean;
 	}
 
 	let proxyState: ProxyState = {
 			showNavBar: true,
 			showFooter: true,
 			redirectProductPages: false,
+			checkoutPage: false,
 			...conf
 		},
 		initProxyState: ProxyState = {
 			showNavBar: true,
 			showFooter: true,
-			redirectProductPages: false
+			redirectProductPages: false,
+			checkoutPage: false
 		},
-		proxyStateCurrent = initProxyState;
+		proxyStateCurrent = { ...initProxyState };
 
 	function updatePage() {
 		if (proxyStateCurrent.showNavBar !== proxyState.showNavBar) {
@@ -75,6 +78,13 @@
 			sendMessage('redirect-product-pages');
 			proxyStateCurrent.redirectProductPages = true;
 		}
+		if (
+			proxyStateCurrent.checkoutPage !== proxyState.checkoutPage &&
+			proxyState.checkoutPage === true
+		) {
+			sendMessage('redirect-on-order-done');
+			proxyStateCurrent.checkoutPage = true;
+		}
 	}
 
 	function inject() {
@@ -83,7 +93,7 @@
 			'https://proxy.vedgekit.calebirwin.ca'
 		);
 		firstLoad = false;
-		proxyStateCurrent = initProxyState;
+		proxyStateCurrent = { ...initProxyState };
 	}
 
 	function sendMessage(cmd: string, data: unknown = undefined) {

@@ -40,18 +40,23 @@ window.addEventListener('message', (event) => {
 		case 'redirect-product-pages':
 			redirectProductPages();
 			break;
+		case 'redirect-on-order-done':
+			redirectOnOrderDone();
+			break;
 		default:
 			break;
 	}
 });
 
 function hideNav() {
-	const h = document.getElementById('wcic_beatties_header');
+	const h =
+		document.getElementById('wcic_beatties_header') ?? document.getElementById('wci_header');
 	if (h) h.style.display = 'none';
 }
 
 function showNav() {
-	const h = document.getElementById('wcic_beatties_header');
+	const h =
+		document.getElementById('wcic_beatties_header') ?? document.getElementById('wci_header');
 	if (h) h.style.display = '';
 }
 
@@ -80,4 +85,16 @@ function redirectProductPages() {
 			return;
 		}
 	});
+}
+
+function redirectOnOrderDone() {
+	if (
+		location.pathname === '/orderConfirm.do' &&
+		document.querySelector('p.wci_breadcrumb_current')?.innerText === 'Thank you for your order!'
+	) {
+		const orderNumber = document.querySelector(
+			'div.wci_row:nth-child(2) > div:nth-child(2) > p:nth-child(2) > span:nth-child(2)'
+		).innerText;
+		sendMessage('goto', { url: '/cart/checkout/success?number=' + orderNumber });
+	}
 }

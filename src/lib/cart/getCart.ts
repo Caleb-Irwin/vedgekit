@@ -38,10 +38,11 @@ interface Coupon {
 }
 export async function getCart(
 	session: InstanceType<typeof SessionManager>,
-	internalFetch: typeof fetch
+	internalFetch: typeof fetch,
+	newCart = false
 ): Promise<Cart> {
 	await session.ready;
-	if (session.s.vCartId === null)
+	if (session.s.vCartId === null || newCart)
 		try {
 			await getCartId(session, internalFetch);
 		} catch (e) {
