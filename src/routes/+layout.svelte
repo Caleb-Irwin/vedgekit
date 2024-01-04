@@ -20,15 +20,19 @@
 
 	import { initializeStores, Drawer } from '@skeletonlabs/skeleton';
 	import type { AfterNavigate } from '@sveltejs/kit';
+	import { initCartStore } from '$lib/cart/cartStore';
 	initializeStores();
 
 	afterNavigate((params: AfterNavigate) => {
-		const isNewPage = params.from?.url.pathname !== params.to?.url.pathname;
+		const isNewPage = params.from?.url !== params.to?.url;
 		const elemPage = document.querySelector('#page');
 		if (isNewPage && elemPage !== null) {
 			elemPage.scrollTop = 0;
 		}
 	});
+
+	const cart = initCartStore();
+	data.cart.then((c) => cart.updateCart(c));
 </script>
 
 <NavSide />

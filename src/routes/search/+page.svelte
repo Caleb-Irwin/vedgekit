@@ -85,11 +85,11 @@
 	<span class="flex-grow" />
 	<div class="flex flex-col sm:flex-row rounded-full p-1 variant-outline-tertiary border-[1px]">
 		<button
-			class="btn btn-icon btn-icon-lg w-12 h-12 {grid ? 'variant-filled-tertiary' : ''}"
+			class="btn btn-icon btn-icon-lg w-8 h-8 {grid ? 'variant-filled-tertiary' : ''}"
 			on:click={() => (grid = true)}><Fa icon={faGrip} /></button
 		>
 		<button
-			class="btn btn-icon btn-icon-lg w-12 h-12 {grid ? '' : 'variant-filled-tertiary'}"
+			class="btn btn-icon btn-icon-lg w-8 h-8 {grid ? '' : 'variant-filled-tertiary'}"
 			on:click={() => (grid = false)}><Fa icon={faBars} /></button
 		>
 	</div>

@@ -3,6 +3,7 @@
 	import { faCheck, faCircleNotch, faCartShopping } from '@fortawesome/free-solid-svg-icons';
 
 	import { enhance } from '$app/forms';
+	import { getCartStore } from '$lib/cart/cartStore';
 	export let sku: string,
 		large = false;
 
@@ -14,18 +15,21 @@
 	let qty = 1,
 		updatingQuantity = false,
 		success = false,
-		form: HTMLFormElement;
+		form: HTMLFormElement,
+		cart = getCartStore();
 </script>
 
 <form
 	use:enhance={() => {
 		updatingQuantity = true;
 		success = false;
-		return async ({ update }) => {
+		return async ({ update, result }) => {
+			// @ts-expect-error results.data actually exists
+			cart.updateCart(result.data.cart);
 			success = true;
-			await update({ reset: false, invalidateAll: false });
 			qty = 1;
 			updatingQuantity = false;
+			await update({ reset: false, invalidateAll: false });
 		};
 	}}
 	method="post"

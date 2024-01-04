@@ -1,12 +1,15 @@
-import { getCart } from '$lib/cart/getCart';
 import type { Actions, PageServerLoad } from './$types';
 import { getCartId } from '$lib/cart/getCartId';
 import { error } from '@sveltejs/kit';
+import { getCart } from '$lib/cart/getCart';
 
 export const load: PageServerLoad = async ({ locals: { session }, fetch }) => {
 	const cart = getCart(session, fetch);
 
-	return { cart, ...session.stream([cart]) };
+	return {
+		cart,
+		...session.stream([cart])
+	};
 };
 
 export const actions = {
@@ -35,7 +38,8 @@ export const actions = {
 		const resObj = (await res.json()) as { cartId: number };
 		if (resObj.cartId) await session.update({ vCartId: resObj.cartId.toString() });
 		return {
-			raw: resObj
+			raw: resObj,
+			cart: await getCart(session, fetch)
 		};
 	},
 	remove: async ({ locals: { session }, request, fetch }) => {
@@ -51,7 +55,8 @@ export const actions = {
 		);
 
 		return {
-			raw: await res.json()
+			raw: await res.json(),
+			cart: await getCart(session, fetch)
 		};
 	}
 	// , itemNote: async ({ cookies, request, fetch }) => {

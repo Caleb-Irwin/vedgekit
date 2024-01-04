@@ -18,6 +18,7 @@
 	import Fa from 'svelte-fa';
 	import { onNavigate } from '$app/navigation';
 	import { writable } from 'svelte/store';
+	import { getCartStore } from '$lib/cart/cartStore';
 
 	searchMode.set(false);
 	onNavigate(() => {
@@ -25,6 +26,12 @@
 	});
 
 	const drawerStore = getDrawerStore();
+
+	const cart = getCartStore();
+	let cartSize: number | undefined;
+	$: cartSize = $cart ? $cart.items.reduce((prev, v) => prev + v.quantity, 0) : undefined;
+	let cartString: string;
+	$: cartString = cartSize === undefined ? '' : cartSize >= 1000 ? '>999' : cartSize.toString();
 </script>
 
 {#if !$searchMode}
@@ -55,8 +62,14 @@
 				>
 					<Fa icon={faSearch} />
 				</button>
-				<a class="btn btn-icon btn-icon-lg" href="/cart">
+				<a class="btn btn-icon btn-icon-lg group" href="/cart">
 					<Fa icon={faCartShopping} />
+					<span
+						class="variant-filled-primary rounded-md fixed {['w-4', 'w-4', 'w-5', 'w-6', 'w-8'][
+							cartString.length
+						]} h-4 mb-4 mr-0 ml-4 text-xs font-semibold grid place-content-center group-hover:opacity-25"
+						>{cartString}</span
+					>
 				</a>
 			</div>
 		</svelte:fragment>
