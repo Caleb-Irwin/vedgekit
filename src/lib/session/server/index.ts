@@ -201,6 +201,7 @@ export class SessionManager {
 		}
 	}
 
+	private reqStack: (() => Promise<void>)[] = [];
 	async req(
 		path: string,
 		reqInit?: RequestInit<RequestInitCfProperties>,
@@ -208,13 +209,33 @@ export class SessionManager {
 		customFetch?: typeof fetch,
 		retry = true
 	): Promise<Response> {
-		await this.readyGuard();
-		const res = await req(path, this.session as Session, reqInit, conf, customFetch);
-		await this.updateFromResponse(res);
-		if (res.status === 401 && retry) {
-			await this.init(undefined, 'refresh');
-			return await this.req(path, reqInit, conf, customFetch, false);
+		const res = new Promise<Response>((resProm) => {
+			const executeReq = async () => {
+				await this.readyGuard();
+				const res = await req(path, this.session as Session, reqInit, conf, customFetch);
+				await this.updateFromResponse(res);
+				if (res.status === 401 && retry) {
+					await this.init(undefined, 'refresh');
+					resProm(await this.req(path, reqInit, conf, customFetch, false));
+				}
+				resProm(res);
+			};
+			this.reqStack.push(executeReq);
+		});
+
+		this.runReqs();
+
+		return await res;
+	}
+
+	private reqRunning = false;
+	private async runReqs() {
+		if (this.reqRunning) return;
+		this.reqRunning = true;
+		while (this.reqStack.length > 0) {
+			const firstReq = this.reqStack.shift();
+			if (firstReq) await firstReq();
 		}
-		return res;
+		this.reqRunning = false;
 	}
 }
