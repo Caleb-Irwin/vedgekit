@@ -29,6 +29,7 @@
 
 <svelte:head>
 	<title>{product ? product.name : 'Product Details'}</title>
+	<link rel="preconnect" href="https://img.shopofficeonline.com" />
 </svelte:head>
 
 <div class="flex flex-col justify-center md:flex-row p-1 pt-2">

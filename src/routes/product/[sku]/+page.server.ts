@@ -7,6 +7,6 @@ export const load: PageServerLoad = async ({ params: { sku }, fetch, locals: { s
 	return {
 		product,
 		sku,
-		...session.stream([product])
+		...session.stream([(async () => await (await product).relatedProducts)()])
 	};
 };

@@ -18,7 +18,7 @@
 	export let data: LayoutData;
 	saveSession(data);
 
-	import { initializeStores, Drawer } from '@skeletonlabs/skeleton';
+	import { initializeStores } from '@skeletonlabs/skeleton';
 	import type { AfterNavigate } from '@sveltejs/kit';
 	import { initCartStore } from '$lib/cart/cartStore';
 	import { PUBLIC_V_HOST } from '$env/static/public';

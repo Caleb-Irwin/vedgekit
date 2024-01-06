@@ -26,6 +26,7 @@
 
 <svelte:head>
 	<title>Cart</title>
+	<link rel="preconnect" href="https://img.shopofficeonline.com" />
 </svelte:head>
 
 <h1 class="p-4 pb-2 text-3xl">Cart</h1>
