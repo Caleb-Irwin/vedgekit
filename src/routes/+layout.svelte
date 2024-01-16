@@ -21,7 +21,8 @@
 	import { initializeStores } from '@skeletonlabs/skeleton';
 	import type { AfterNavigate } from '@sveltejs/kit';
 	import { initCartStore } from '$lib/cart/cartStore';
-	import { PUBLIC_V_HOST } from '$env/static/public';
+	import { PUBLIC_V_HOST, PUBLIC_ANALYTICS } from '$env/static/public';
+	import { dev } from '$app/environment';
 	initializeStores();
 
 	afterNavigate((params: AfterNavigate) => {
@@ -98,3 +99,5 @@
 		</div>
 	</svelte:fragment>
 </AppShell>
+
+{dev ? '' : PUBLIC_ANALYTICS}
