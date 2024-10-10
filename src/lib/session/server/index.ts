@@ -1,10 +1,10 @@
 import type { Cookies } from '@sveltejs/kit';
 import setCookieParser from 'set-cookie-parser';
-import { webcrypto } from 'crypto';
+// import { webcrypto } from 'crypto';
 // @ts-expect-error  Need override for cloudflare jwt
-global.crypto = webcrypto;
+// global.crypto = webcrypto;
 // @ts-expect-error  Need override for cloudflare jwt
-global.CryptoKey = webcrypto.CryptoKey;
+// global.CryptoKey = webcrypto.CryptoKey;
 import jwt from '@tsndr/cloudflare-worker-jwt';
 import { req, type ReqConf } from './req';
 import { JWT_SECRET, REQUIRE_AUTHORIZATION_HEADER } from '$env/static/private';
