@@ -69,10 +69,7 @@
 		class="w-full h-full snap-x snap-mandatory scroll-smooth flex overflow-x-auto"
 	>
 		{#each bannerImages ?? [] as { imageUrl, index }}
-			<a
-				href="/search?featured={index}"
-				class="shrink-0 snap-center w-full aspect-[1805/351] p-0.5"
-			>
+			<a href="/search?featured={index}" class="shrink-0 snap-center w-full aspect-[685/81] p-0.5">
 				<img class="h-full w-full rounded-container-token" src={imageUrl} alt="" />
 			</a>
 		{/each}

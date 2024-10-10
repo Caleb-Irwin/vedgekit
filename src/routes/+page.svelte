@@ -15,7 +15,7 @@
 <div class="w-full flex flex-col justify-center items-start">
 	<div class="w-full space-y-10 text-center flex flex-col items-center p-2 pb-6">
 		{#if data.featured}
-			<div class="w-full aspect-[1805/351]">
+			<div class="w-full aspect-[685/81]">
 				<Carousel bannerImages={data.featured.bannerImages} />
 			</div>
 		{/if}
