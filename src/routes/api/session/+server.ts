@@ -12,3 +12,8 @@ export const POST: RequestHandler = async ({ locals: { session }, url, request }
 		s: session.s
 	});
 };
+
+export const GET: RequestHandler = async ({ locals: { session } }) => {
+	await session.init();
+	return json(session.s);
+};

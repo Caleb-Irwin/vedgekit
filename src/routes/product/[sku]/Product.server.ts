@@ -31,7 +31,7 @@ export async function getProduct(
 		},
 		customFetch
 	);
-	const raw = await res.json<ProductRes>();
+	const raw = (await res.json()) as ProductRes;
 	const {
 		name,
 		itemPrice: price,
