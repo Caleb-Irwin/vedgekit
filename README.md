@@ -1,38 +1,16 @@
-# create-svelte
+# Vedgekit
 
-Everything you need to build a Svelte project, powered by [`create-svelte`](https://github.com/sveltejs/kit/tree/master/packages/create-svelte).
+[vedgekit.calebirwin.ca](https://vedgekit.calebirwin.ca/)
 
-## Creating a project
+Vedgekit is a demonstration e-commerce site created to show issues with the front end of the Venxia e-commerce platform. It accompanies a [21-page report](./Venxia%20Report%20for%20Guild%20Stationers.pdf) that outlines issues and solutions. In the year since the report, many of the report's small user experience suggestions have been applied, while performance improvements are currently in progress. Vedgekit is effectively a new frontend for [test.shopofficeonline.com](https://test.shopofficeonline.com/), though in practice it handles its own sessions and has a separate backend. At present, Vedgekit is still at least twice as fast as Venxia by all relevant metrics (FCP, LCP, TTI).  
 
-If you're seeing this, you've probably already done this step. Congrats!
+## Tech Stack
 
-```bash
-# create a new project in the current directory
-npm create svelte@latest
+- **V**enxia: A niche e-commerce platform
+- Cloudflare’s **Edge** Workers: A globally distributed serverless runtime. Note, Vedgekit can run on many different JavaScript runtimes, including other serverless solutions such as AWS Lambda or a server running Node.js or Bun.
+- Svelte**Kit**: A modern full-stack Javascript framework. SvelteKit is powered by Svelte which is highly performant, compiled, and feature complete.
 
-# create a new project in my-app
-npm create svelte@latest my-app
-```
+## Request Flow
 
-## Developing
-
-Once you've created a project and installed dependencies with `npm install` (or `pnpm install` or `yarn`), start a development server:
-
-```bash
-npm run dev
-
-# or start the server and open the app in a new browser tab
-npm run dev -- --open
-```
-
-## Building
-
-To create a production version of your app:
-
-```bash
-npm run build
-```
-
-You can preview the production build with `npm run preview`.
-
-> To deploy your app, you may need to install an [adapter](https://kit.svelte.dev/docs/adapters) for your target environment.
+Vedgekit uses HTTP response streaming to improve performance and user experience, as shown in the diagram below.
+![alt text](./Vedgekit%20System%20Diagram.png)
